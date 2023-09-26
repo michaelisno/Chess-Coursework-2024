@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -120,67 +120,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &121348988
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3565035217714186498, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5720961383683653658, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: -3590486366359828239, guid: 333d9e0c2d0c22bb5ad021bc40a7a257, type: 3}
-    - target: {fileID: 6091258956971091105, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
-      propertyPath: m_Name
-      value: Tile
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
 --- !u!1 &367484632
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,6 +315,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1959670297}
+  - component: {fileID: 1959670298}
   m_Layer: 0
   m_Name: _GameManager
   m_TagString: Untagged
@@ -398,6 +338,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1959670298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1959670296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 803a0c3ffb036e74680776e09f79d83a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tiles: []
+  tilePrefab: {fileID: 8071940270748118377, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
+  board: {fileID: 2013019849}
 --- !u!1 &2013019849
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,4 +392,3 @@ SceneRoots:
   - {fileID: 1789942619}
   - {fileID: 1959670297}
   - {fileID: 2013019850}
-  - {fileID: 121348988}
