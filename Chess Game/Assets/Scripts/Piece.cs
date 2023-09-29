@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
@@ -14,12 +13,18 @@ public class Piece : MonoBehaviour
         king
     }
 
+    public PieceType type;
+    public int colour;
+
     public Mesh[] pieceModels;
     public Material blackPieceMaterial, whitePieceMaterial;
+
+    public bool hasPieceMoved;
 
     public PieceType SetPieceType(PieceType pieceType)
     {
         gameObject.SetActive(true);
+        type = pieceType;
 
         switch(pieceType)
         {
@@ -49,10 +54,12 @@ public class Piece : MonoBehaviour
         return pieceType;
     }
 
-    public void SetPieceColour(int colour)
+    public void SetPieceColour(int _colour)
     {
+        colour = _colour;
+
         Material[] materials = GetComponent<MeshRenderer>().materials;
-        if (colour == 0)
+        if (_colour == 0)
         {
             materials[1] = blackPieceMaterial;
         }

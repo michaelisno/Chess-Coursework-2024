@@ -1,12 +1,15 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject[] tiles;
+    public List<GameObject> tiles = new List<GameObject>();
 
     public GameObject tilePrefab;
     public GameObject board;
+
+    public bool isPlayerWhite = true;
 
     private void Start()
     {
@@ -19,7 +22,7 @@ public class GameManager : MonoBehaviour
         {
             for (int y = 0; y < 8; y++)
             {
-                tiles.Append(CreateTile(x, y));
+                tiles.Add(CreateTile(x, y));
             }
         }
     }
