@@ -30,21 +30,55 @@ public class TileSelector : MonoBehaviour
 
         if (highlightedTiles.Contains(tile))
         {
-            // move piece
-            if (!selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved)
+            if (tile.transform.GetChild(0).GetComponent<Piece>().type == Piece.PieceType.none)
             {
-                selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = true;
+                // move piece
+                if (!selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved)
+                {
+                    selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = true;
+                }
+
+                tile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(selectedTile.transform.GetChild(0).GetComponent<Piece>().type);
+                tile.transform.GetChild(0).GetComponent<Piece>().SetPieceColour(Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite));
+                tile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved;
+                selectedTile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.none);
+                selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().position.x
+                    + selectedTile.GetComponent<Tile>().position.y) % 2);
+                selectedTile = null;
+
+                HighlightLegalTiles(new List<GameObject>());
             }
+            else
+            {
+                Piece takenPiece = new Piece();
 
-            tile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(selectedTile.transform.GetChild(0).GetComponent<Piece>().type);
-            tile.transform.GetChild(0).GetComponent<Piece>().SetPieceColour(Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite));
-            tile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved;
-            selectedTile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.none);
-            selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().position.x
-                + selectedTile.GetComponent<Tile>().position.y) % 2);
-            selectedTile = null;
+                // add to taken pieces
+                if (tile.transform.GetChild(0).GetComponent<Piece>().colour == 1)
+                {
+                    takenPiece = tile.transform.GetChild(0).GetComponent<Piece>();
+                    GetComponent<GameManager>().whiteTakenPieces.Add(takenPiece);
+                }
+                if (tile.transform.GetChild(0).GetComponent<Piece>().colour == 0)
+                {
+                    takenPiece = tile.transform.GetChild(0).GetComponent<Piece>();
+                    GetComponent<GameManager>().blackTakenPieces.Add(takenPiece);
+                }
+                // move piece
+                if (!selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved)
+                {
+                    selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = true;
+                }
 
-            HighlightLegalTiles(new List<GameObject>());
+                tile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(selectedTile.transform.GetChild(0).GetComponent<Piece>().type);
+                tile.transform.GetChild(0).GetComponent<Piece>().SetPieceColour(Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite));
+                tile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved;
+                selectedTile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.none);
+                selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().position.x
+                    + selectedTile.GetComponent<Tile>().position.y) % 2);
+                selectedTile = null;
+
+                HighlightLegalTiles(new List<GameObject>());
+            }
         }
         else
         {

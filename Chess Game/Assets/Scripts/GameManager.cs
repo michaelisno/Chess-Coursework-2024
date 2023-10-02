@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
 {
     public List<GameObject> tiles = new List<GameObject>();
 
+    public List<Piece> whiteTakenPieces = new List<Piece>();
+    public List<Piece> blackTakenPieces = new List<Piece>();
+
     public GameObject tilePrefab;
     public GameObject board;
 
