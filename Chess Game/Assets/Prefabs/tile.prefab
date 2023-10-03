@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80564d9df69a0244ead8d49d11f1e25a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
+  colour: 0
   pieceModels:
   - {fileID: -3590486366359828239, guid: 333d9e0c2d0c22bb5ad021bc40a7a257, type: 3}
   - {fileID: -7252575237529466654, guid: 333d9e0c2d0c22bb5ad021bc40a7a257, type: 3}
@@ -104,8 +106,10 @@ MonoBehaviour:
   - {fileID: 8352072447354782621, guid: 333d9e0c2d0c22bb5ad021bc40a7a257, type: 3}
   - {fileID: 4790316175038368296, guid: 333d9e0c2d0c22bb5ad021bc40a7a257, type: 3}
   - {fileID: 734077344996761655, guid: 333d9e0c2d0c22bb5ad021bc40a7a257, type: 3}
-  blackPieceMaterial: {fileID: 2100000, guid: 3fed4e85a3c70c5cd8df71f2157829b4, type: 2}
-  whitePieceMaterial: {fileID: 2100000, guid: 24aa1bf6738082b6b9cd6c6f3a5790ba, type: 2}
+  pieceMaterials:
+  - {fileID: 2100000, guid: 3fed4e85a3c70c5cd8df71f2157829b4, type: 2}
+  - {fileID: 2100000, guid: 24aa1bf6738082b6b9cd6c6f3a5790ba, type: 2}
+  hasPieceMoved: 0
 --- !u!1 &8071940270748118377
 GameObject:
   m_ObjectHideFlags: 0

@@ -30,14 +30,14 @@ public class MovesGenerator : MonoBehaviour
                 }
             }
 
-            // piece taking diagonally up, left
+            // capture: up, left
             n = Convert.ToInt32(8 * position.x + position.y - 7);
             if (CheckLegality(n, Piece.PieceType.pawn, currentTeamColour))
             {
                 legalMoves.Add(GetComponent<GameManager>().tiles[n]);
             }
 
-            // piece taking diagonally up, right
+            // capture: up, right
             n = (Convert.ToInt32(position.x) * 8) + Convert.ToInt32(position.y + 9);
             if (CheckLegality(n, Piece.PieceType.pawn, currentTeamColour))
             {
@@ -48,11 +48,12 @@ public class MovesGenerator : MonoBehaviour
         // knight
         if (pieceType == Piece.PieceType.knight)
         {
-            // positioned in last row
-            if (position.y == 0)
+            int n = 0;
+            // not in row 7 or 6
+            if (position.y != 7 && position.y != 6 || (position.y > 1 && position.y < 6)) 
             {
                 // up left
-                int n = Convert.ToInt32(8 * position.x + position.y - 6);
+                n = Convert.ToInt32(8 * position.x + position.y - 6);
                 if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
                     legalMoves.Add(GetComponent<GameManager>().tiles[n]);
 
@@ -60,34 +61,73 @@ public class MovesGenerator : MonoBehaviour
                 n = Convert.ToInt32(8 * position.x + position.y + 10);
                 if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
                     legalMoves.Add(GetComponent<GameManager>().tiles[n]);
-            }
-            // positioned in 2ndTlast row
-            else if (position.y == 1)
-            { 
-            
-            }
-            // position in first row
-            else if (position.y == 7)
-            { 
-            
-            }
-            // positioned in 2nd row
-            else if (position.y == 6)
-            { 
-            
-            }
-            // positioned anywhere else
-            else
-            {
 
+                // left up
+                n = Convert.ToInt32(8 * position.x + position.y - 15);
+                if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                    legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+
+                // right up
+                n = Convert.ToInt32(8 * position.x + position.y + 17);
+                if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                    legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+
+                if (position.y == 1)
+                {
+                    // left down
+                    n = Convert.ToInt32(8 * position.x + position.y + 15);
+                    if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                        legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+
+                    // right down
+                    n = Convert.ToInt32(8 * position.x + position.y - 17);
+                    if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                        legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+                }    
             }
+            // in row 0 or 1
+            if (position.y != 0 && position.y != 1 || (position.y > 1 && position.y < 6))
+            {
+                // up left
+                n = Convert.ToInt32(8 * position.x + position.y + 6);
+                if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                    legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+
+                // up right
+                n = Convert.ToInt32(8 * position.x + position.y - 10);
+                if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                    legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+
+                // left up
+                n = Convert.ToInt32(8 * position.x + position.y + 15);
+                if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                    legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+
+                // right up
+                n = Convert.ToInt32(8 * position.x + position.y - 17);
+                if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                    legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+
+                if (position.y == 6)
+                {
+                    // left down
+                    n = Convert.ToInt32(8 * position.x + position.y - 15);
+                    if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                        legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+
+                    // right down
+                    n = Convert.ToInt32(8 * position.x + position.y + 17);
+                    if (CheckLegality(n, Piece.PieceType.knight, currentTeamColour))
+                        legalMoves.Add(GetComponent<GameManager>().tiles[n]);
+                }
+            } 
         }
 
         // rook
         if (pieceType == Piece.PieceType.rook)
         {
             // up
-            for(int n = Convert.ToInt32(position.y); n < 7; n++)
+            for (int n = Convert.ToInt32(position.y); n < 7; n++) 
             {
                 if (GetComponent<GameManager>().tiles[Convert.ToInt32(position.x) * 8 + n+1].transform.GetChild(0).
                     GetComponent<Piece>().type == Piece.PieceType.none)
@@ -132,6 +172,7 @@ public class MovesGenerator : MonoBehaviour
         return legalMoves;
     }
 
+    // Seperate function used to check for legality; to prevent repeated identitcal if statements
     private bool CheckLegality(int n, Piece.PieceType type, bool currentTeamColour)
     {
         switch (type)

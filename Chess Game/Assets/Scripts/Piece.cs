@@ -17,7 +17,7 @@ public class Piece : MonoBehaviour
     public int colour;
 
     public Mesh[] pieceModels;
-    public Material blackPieceMaterial, whitePieceMaterial;
+    public Material[] pieceMaterials;
 
     public bool hasPieceMoved;
 
@@ -59,14 +59,7 @@ public class Piece : MonoBehaviour
         colour = _colour;
 
         Material[] materials = GetComponent<MeshRenderer>().materials;
-        if (_colour == 0)
-        {
-            materials[1] = blackPieceMaterial;
-        }
-        else
-        {
-            materials[1] = whitePieceMaterial;
-        }
+        materials[1] = pieceMaterials[_colour];
         GetComponent<MeshRenderer>().materials = materials;
     }
 }

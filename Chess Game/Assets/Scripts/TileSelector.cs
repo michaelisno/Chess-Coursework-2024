@@ -30,25 +30,7 @@ public class TileSelector : MonoBehaviour
 
         if (highlightedTiles.Contains(tile))
         {
-            if (tile.transform.GetChild(0).GetComponent<Piece>().type == Piece.PieceType.none)
-            {
-                // move piece
-                if (!selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved)
-                {
-                    selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = true;
-                }
-
-                tile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(selectedTile.transform.GetChild(0).GetComponent<Piece>().type);
-                tile.transform.GetChild(0).GetComponent<Piece>().SetPieceColour(Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite));
-                tile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved;
-                selectedTile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.none);
-                selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().position.x
-                    + selectedTile.GetComponent<Tile>().position.y) % 2);
-                selectedTile = null;
-
-                HighlightLegalTiles(new List<GameObject>());
-            }
-            else
+            if (tile.transform.GetChild(0).GetComponent<Piece>().type != Piece.PieceType.none)
             {
                 Piece takenPiece = new Piece();
 
@@ -63,22 +45,18 @@ public class TileSelector : MonoBehaviour
                     takenPiece = tile.transform.GetChild(0).GetComponent<Piece>();
                     GetComponent<GameManager>().blackTakenPieces.Add(takenPiece);
                 }
-                // move piece
-                if (!selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved)
-                {
-                    selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = true;
-                }
-
-                tile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(selectedTile.transform.GetChild(0).GetComponent<Piece>().type);
-                tile.transform.GetChild(0).GetComponent<Piece>().SetPieceColour(Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite));
-                tile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved;
-                selectedTile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.none);
-                selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().position.x
-                    + selectedTile.GetComponent<Tile>().position.y) % 2);
-                selectedTile = null;
-
-                HighlightLegalTiles(new List<GameObject>());
             }
+
+            // move piece
+            tile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(selectedTile.transform.GetChild(0).GetComponent<Piece>().type);
+            tile.transform.GetChild(0).GetComponent<Piece>().SetPieceColour(Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite));
+            tile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved = true;
+            selectedTile.transform.GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.none);
+            selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().position.x
+                + selectedTile.GetComponent<Tile>().position.y) % 2);
+            selectedTile = null;
+
+            HighlightLegalTiles(new List<GameObject>());
         }
         else
         {
@@ -86,7 +64,7 @@ public class TileSelector : MonoBehaviour
             if (selectedTile == null)
             {
                 if (tile.transform.GetChild(0).gameObject.GetComponent<Piece>().type != Piece.PieceType.none
-                    && tile.transform.GetChild(0).gameObject.GetComponent<Piece>().colour != 0)
+                    && tile.transform.GetChild(0).gameObject.GetComponent<Piece>().colour == Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite))
                 {
                     selectedTile = tile;
                     tile.GetComponent<Tile>().SetColour(3);
@@ -107,7 +85,7 @@ public class TileSelector : MonoBehaviour
                 else
                 {
                     if (tile.transform.GetChild(0).gameObject.GetComponent<Piece>().type != Piece.PieceType.none
-                        && tile.transform.GetChild(0).gameObject.GetComponent<Piece>().colour != 0)
+                        && tile.transform.GetChild(0).gameObject.GetComponent<Piece>().colour == Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite))
                     {
                         selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().position.x + selectedTile.GetComponent<Tile>().position.y) % 2);
                         selectedTile = tile;
