@@ -79,6 +79,28 @@ public class MovesGenerator : MonoBehaviour
                     break;
                 }
             }
+
+            // down
+            for (int n = Convert.ToInt32(position.y); n < 7; n++)
+            {
+                Debug.Log(n + 1);
+                if (GetComponent<GameManager>().tiles[Convert.ToInt32(position.x) * 8 + n + 1].transform.GetChild(0).
+                    GetComponent<Piece>().type == Piece.PieceType.none)
+                {
+                    legalMoves.Add(GetComponent<GameManager>().tiles[Convert.ToInt32(position.x) * 8 + n + 1]);
+                }
+                else if (GetComponent<GameManager>().tiles[Convert.ToInt32(position.x) * 8 + n + 1].transform.GetChild(0).
+                    GetComponent<Piece>().type != Piece.PieceType.none && GetComponent<GameManager>().tiles[Convert.ToInt32(position.x) * 8 + n + 1].transform.GetChild(0).
+                    GetComponent<Piece>().colour != Convert.ToInt32(currentTeamColour))
+                {
+                    legalMoves.Add(GetComponent<GameManager>().tiles[Convert.ToInt32(position.x) * 8 + n + 1]);
+                    break;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
 
         return legalMoves;
