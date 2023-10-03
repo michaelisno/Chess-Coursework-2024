@@ -3,27 +3,31 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    public Material[] tileMaterials;
-    public Vector2 position;
+    [SerializeField]
+    private Material[] tileMaterials;
 
-    public void SetColour(int colour)
-    {
-        GetComponent<MeshRenderer>().material = tileMaterials[colour];
-    }
+    private Vector2 position;
+
+    // Setters
+    public void SetColour(int _colour) { GetComponent<MeshRenderer>().material = tileMaterials[_colour]; }
+    public void SetPosition(Vector2 _position) { position = _position; }
+
+    // Getters
+    public Vector2 GetPosition() { return position; }
 
     public void InitatePieces()
     {
-        if (position.y == 1 || position.y == 6) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.pawn);
+        if (position.y == 1 || position.y == 6) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetType(Piece.PieceType.pawn);
         if (position.y == 0 || position.y == 7)
         {
-            if (position.x == 0 || position.x == 7) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.rook);
-            if (position.x == 1 || position.x == 6) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.knight);
-            if (position.x == 2 || position.x == 5) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.bishop);
-            if (position.x == 3) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.queen);
-            if (position.x == 4) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetPieceType(Piece.PieceType.king);
+            if (position.x == 0 || position.x == 7) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetType(Piece.PieceType.rook);
+            if (position.x == 1 || position.x == 6) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetType(Piece.PieceType.knight);
+            if (position.x == 2 || position.x == 5) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetType(Piece.PieceType.bishop);
+            if (position.x == 3) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetType(Piece.PieceType.queen);
+            if (position.x == 4) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetType(Piece.PieceType.king);
         }
 
         // set piece colour based on position
-        GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetPieceColour(Convert.ToInt32(position.y <= 3));
+        GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetColour(Convert.ToInt32(position.y <= 3));
     }
 }

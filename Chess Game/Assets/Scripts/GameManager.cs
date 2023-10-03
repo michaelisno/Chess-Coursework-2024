@@ -32,8 +32,8 @@ public class GameManager : MonoBehaviour
 
         // Set tile attributes
         newTile.name = (8 * x + y).ToString();
-        newTile.GetComponent<Tile>().position = new Vector2(x, y);
         newTile.GetComponent<Tile>().SetColour((x + y) % 2);
+        newTile.GetComponent<Tile>().SetPosition(new Vector2(x, y));
         newTile.GetComponent<Tile>().InitatePieces();
 
         return newTile;

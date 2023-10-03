@@ -13,20 +13,27 @@ public class Piece : MonoBehaviour
         king
     }
 
-    public PieceType type;
-    public int colour;
-
-    public Mesh[] pieceModels;
-    public Material[] pieceMaterials;
+    [SerializeField]
+    private Mesh[] pieceModels;
+    [SerializeField]
+    private Material[] pieceMaterials;
 
     public bool hasPieceMoved;
 
-    public PieceType SetPieceType(PieceType pieceType)
+    private PieceType type;
+    private int colour;
+
+    // Getters
+    public PieceType GetType() { return type; }
+    public int GetColour() { return colour; }
+
+    // Setters
+    public PieceType SetType(PieceType _type)
     {
         gameObject.SetActive(true);
-        type = pieceType;
+        type = _type;
 
-        switch(pieceType)
+        switch(type)
         {
             case PieceType.none:
                 gameObject.SetActive(false);
@@ -51,15 +58,14 @@ public class Piece : MonoBehaviour
                 break;
         }
 
-        return pieceType;
+        return type;
     }
 
-    public void SetPieceColour(int _colour)
+    public void SetColour(int _colour)
     {
         colour = _colour;
-
         Material[] materials = GetComponent<MeshRenderer>().materials;
-        materials[1] = pieceMaterials[_colour];
+        materials[1] = pieceMaterials[colour];
         GetComponent<MeshRenderer>().materials = materials;
     }
 }
