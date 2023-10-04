@@ -8,11 +8,13 @@ public class MovesGenerator : MonoBehaviour
     {
         List<GameObject> legalMoves = new List<GameObject>();
 
+        int n = 0;
+
         // pawn
         if (pieceType == Piece.PieceType.pawn)
         {
             // 1 up
-            int n = Convert.ToInt32(8 * position.x + position.y + 1);
+            n = Convert.ToInt32(8 * position.x + position.y + 1);
             if (n >= 0 && n <= 63 && GetComponent<GameManager>().tiles[n].transform.GetChild(0).GetComponent<Piece>().GetType() 
                 == Piece.PieceType.none)
             {
@@ -48,7 +50,7 @@ public class MovesGenerator : MonoBehaviour
         // knight
         if (pieceType == Piece.PieceType.knight)
         {
-            int n = 0;
+            //int n = 0;
             // not in row 7 or 6
             if (position.y != 7 && position.y != 6 || (position.y > 1 && position.y < 6)) 
             {
@@ -127,7 +129,7 @@ public class MovesGenerator : MonoBehaviour
         if (pieceType == Piece.PieceType.rook)
         {
             // up
-            for (int n = Convert.ToInt32(position.y); n < 7; n++) 
+            for (n = Convert.ToInt32(position.y); n < 7; n++) 
             {
                 int t = Convert.ToInt32(position.x) * 8 + n + 1;
                 if (CheckLegality(t, Piece.PieceType.rook, currentTeamColour))
@@ -141,9 +143,23 @@ public class MovesGenerator : MonoBehaviour
             }
 
             // down
-            for (int n = Convert.ToInt32(position.y); n > 0; n--)
+            for (n = Convert.ToInt32(position.y); n > 0; n--)
             {
                 int t = Convert.ToInt32(position.x) * 8 + n - 1;
+                if (CheckLegality(t, Piece.PieceType.rook, currentTeamColour))
+                {
+                    legalMoves.Add(GetComponent<GameManager>().tiles[t]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // right
+            for (n = Convert.ToInt32(position.x); n < 7; n++)
+            {
+                int t = Convert.ToInt32(position.y) + 8 * (n + 1);
                 if (CheckLegality(t, Piece.PieceType.rook, currentTeamColour))
                 {
                     legalMoves.Add(GetComponent<GameManager>().tiles[t]);
