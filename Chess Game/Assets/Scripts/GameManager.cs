@@ -14,24 +14,24 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // Initialise Board
-        for (int xPos = 0; xPos < 8; xPos++)
+        for (int xPosition = 0; xPosition < 8; xPosition++)
         {
-            for (int yPos = 0; yPos < 8; yPos++)
+            for (int yPosition = 0; yPosition < 8; yPosition++)
             {
-                tiles.Add(CreateTile(xPos, yPos));
+                tiles.Add(CreateTile(xPosition, yPosition));
             }
         }
     }
 
-    private GameObject CreateTile(int xPos, int yPos)
+    private GameObject CreateTile(int xPosition, int yPosition)
     {
         // Create tile object
-        GameObject newTile = Instantiate(tilePrefab, new Vector3(xPos, 0, yPos), Quaternion.identity, board.transform);
+        GameObject newTile = Instantiate(tilePrefab, new Vector3(xPosition, 0, yPosition), Quaternion.identity, board.transform);
 
         // Set tile attributes
-        newTile.name = (8 * xPos + yPos).ToString();
-        newTile.GetComponent<Tile>().SetColour((xPos + yPos) % 2);
-        newTile.GetComponent<Tile>().SetPosition(new Vector2(xPos, yPos));
+        newTile.name = (8 * xPosition + yPosition).ToString();
+        newTile.GetComponent<Tile>().SetColour((xPosition + yPosition) % 2);
+        newTile.GetComponent<Tile>().SetPosition(new Vector2(xPosition, yPosition));
         newTile.GetComponent<Tile>().InitatePieces();
 
         return newTile;
