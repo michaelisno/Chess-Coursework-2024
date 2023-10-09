@@ -19,7 +19,10 @@ public class TileSelector : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.gameObject.tag == "tile") SelectTile();
+                if (hit.collider.gameObject.tag == "tile")
+                {
+                    SelectTile();
+                }
             } 
         }
     }
@@ -102,8 +105,7 @@ public class TileSelector : MonoBehaviour
 
     private void HighlightLegalTiles(List<GameObject> legalTiles)
     { 
-        // highlight legal tiles from legalTiles array
-        // reset all highlighted tiles
+        // Reset all highlighted tiles
         foreach (GameObject tile in highlightedTiles) 
         {
             tile.GetComponent<Tile>().SetColour(Convert.ToInt32(tile.GetComponent<Tile>().GetPosition().x

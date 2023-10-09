@@ -4,9 +4,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public List<GameObject> tiles = new List<GameObject>();
-
-    public List<Piece> whiteTakenPieces = new List<Piece>();
-    public List<Piece> blackTakenPieces = new List<Piece>();
+    public List<Piece> whiteTakenPieces, blackTakenPieces = new List<Piece>();
 
     [SerializeField]
     private GameObject tilePrefab, board;

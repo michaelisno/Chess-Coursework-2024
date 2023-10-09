@@ -27,7 +27,7 @@ public class Tile : MonoBehaviour
             if (position.x == 4) GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetType(Piece.PieceType.king);
         }
 
-        // set piece colour based on position
+        // Set colour based on position
         GetComponent<Transform>().GetChild(0).GetComponent<Piece>().SetColour(Convert.ToInt32(position.y <= 3));
     }
 }
