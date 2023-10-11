@@ -16,7 +16,7 @@ public class MoveGenerator : MonoBehaviour
         {
             // 1 up
             tileIndex = Convert.ToInt32(8 * position.x + position.y + 1);
-            if (tileIndex >= 0 && tileIndex <= 63 && GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).GetComponent<Piece>().GetType() 
+            if (tileIndex >= 0 && tileIndex <= 63 && GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).GetComponent<Piece>().GetType()
                 == Piece.PieceType.none)
             {
                 legalMoves.Add(GetComponent<GameManager>().tiles[tileIndex]);
@@ -52,7 +52,7 @@ public class MoveGenerator : MonoBehaviour
         if (pieceType == Piece.PieceType.knight)
         {
             // not in row 7 or 6
-            if (position.y != 7 && position.y != 6 || (position.y > 1 && position.y < 6)) 
+            if (position.y != 7 && position.y != 6 || (position.y > 1 && position.y < 6))
             {
                 // up left
                 tileIndex = Convert.ToInt32(8 * position.x + position.y - 6);
@@ -85,7 +85,7 @@ public class MoveGenerator : MonoBehaviour
                     tileIndex = Convert.ToInt32(8 * position.x + position.y - 17);
                     if (CheckLegality(tileIndex, Piece.PieceType.knight, currentTeamColour))
                         legalMoves.Add(GetComponent<GameManager>().tiles[tileIndex]);
-                }    
+                }
             }
             // in row 0 or 1
             if (position.y != 0 && position.y != 1 || (position.y > 1 && position.y < 6))
@@ -122,14 +122,14 @@ public class MoveGenerator : MonoBehaviour
                     if (CheckLegality(tileIndex, Piece.PieceType.knight, currentTeamColour))
                         legalMoves.Add(GetComponent<GameManager>().tiles[tileIndex]);
                 }
-            } 
+            }
         }
 
         // rook
         if (pieceType == Piece.PieceType.rook)
         {
             // up
-            for (tileIndex = Convert.ToInt32(position.y); tileIndex < 7; tileIndex++) 
+            for (tileIndex = Convert.ToInt32(position.y); tileIndex < 7; tileIndex++)
             {
                 int tempIndex = Convert.ToInt32(position.x) * 8 + tileIndex + 1;
                 if (CheckLegality(tempIndex, Piece.PieceType.rook, currentTeamColour))
@@ -188,10 +188,12 @@ public class MoveGenerator : MonoBehaviour
         // bishop
         if (pieceType == Piece.PieceType.bishop)
         {
+            int originPosition = Convert.ToInt32(8 * position.x + position.y);
+
             // right up
             for (int initialPosition = Convert.ToInt32(position.x * 8 + position.y) + 9; initialPosition < 63; initialPosition += 9)
             {
-                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour))
+                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour, originPosition))
                 {
                     legalMoves.Add(GetComponent<GameManager>().tiles[initialPosition]);
                 }
@@ -204,7 +206,7 @@ public class MoveGenerator : MonoBehaviour
             // left up
             for (int initialPosition = Convert.ToInt32(position.x * 8 + position.y) - 7; initialPosition > 0; initialPosition -= 7)
             {
-                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour))
+                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour, originPosition))
                 {
                     legalMoves.Add(GetComponent<GameManager>().tiles[initialPosition]);
                 }
@@ -214,11 +216,10 @@ public class MoveGenerator : MonoBehaviour
                 }
             }
 
-            int originPosition = Convert.ToInt32(8 * position.x + position.y);
             // right down
             for (int initialPosition = Convert.ToInt32(position.x * 8 + position.y) + 7; initialPosition < 63; initialPosition += 7)
             {
-                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour) && GetComponent<GameManager>().tiles[initialPosition].GetComponent<Tile>().GetColour() == GetComponent<GameManager>().tiles[originPosition].GetComponent<Tile>().GetColour())
+                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour, originPosition))
                 {
                     legalMoves.Add(GetComponent<GameManager>().tiles[initialPosition]);
                 }
@@ -231,7 +232,8 @@ public class MoveGenerator : MonoBehaviour
             // left down
             for (int initialPosition = Convert.ToInt32(position.x * 8 + position.y) - 9; initialPosition > 0; initialPosition -= 9)
             {
-                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour))
+
+                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour, originPosition))
                 {
                     legalMoves.Add(GetComponent<GameManager>().tiles[initialPosition]);
                 }
@@ -242,23 +244,11 @@ public class MoveGenerator : MonoBehaviour
             }
         }
 
-        // queen
-        if (pieceType == Piece.PieceType.queen)
-        { 
-        
-        }
-
-        // king
-        if (pieceType == Piece.PieceType.king)
-        { 
-        
-        }
-
         return legalMoves;
     }
 
     // Seperate function used to check for legality; to prevent repeated identitcal if statements
-    private bool CheckLegality(int tileIndex, Piece.PieceType type, bool currentTeamColour)
+    private bool CheckLegality(int tileIndex, Piece.PieceType type, bool currentTeamColour, int originPosition = 0)
     {
         switch (type)
         {
@@ -277,10 +267,12 @@ public class MoveGenerator : MonoBehaviour
                     GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.none && GetComponent<GameManager>().tiles[tileIndex].
                     transform.GetChild(0).GetComponent<Piece>().GetColour() != Convert.ToInt32(currentTeamColour));
             case Piece.PieceType.bishop:
-                return tileIndex >= 0 && tileIndex <= 63 && (GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).
-                    GetComponent<Piece>().GetType() == Piece.PieceType.none) || (GetComponent<GameManager>().tiles[tileIndex].transform.
+                return (tileIndex >= 0 && tileIndex <= 63 && (GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).
+                    GetComponent<Piece>().GetType() == Piece.PieceType.none) || GetComponent<GameManager>().tiles[tileIndex].transform.
                     GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.none && GetComponent<GameManager>().tiles[tileIndex].
-                    transform.GetChild(0).GetComponent<Piece>().GetColour() != Convert.ToInt32(currentTeamColour));
+                    transform.GetChild(0).GetComponent<Piece>().GetColour() != Convert.ToInt32(currentTeamColour)) &&
+                    GetComponent<GameManager>().tiles[tileIndex].GetComponent<Tile>().GetColour() == GetComponent<GameManager>().
+                    tiles[originPosition].GetComponent<Tile>().GetColour();
             default:
                 return false;
         }
