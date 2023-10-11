@@ -8,12 +8,15 @@ public class Tile : MonoBehaviour
 
     private Vector2 position;
 
+    private int colour;
+
     // Setters
-    public void SetColour(int _colour) { GetComponent<MeshRenderer>().material = tileMaterials[_colour]; }
+    public void SetColour(int _colour) { GetComponent<MeshRenderer>().material = tileMaterials[_colour]; colour = _colour; }
     public void SetPosition(Vector2 _position) { position = _position; }
 
     // Getters
     public Vector2 GetPosition() { return position; }
+    public int GetColour() { return colour; }
 
     public void InitatePieces()
     {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class MoveGenerator : MonoBehaviour
@@ -187,21 +188,70 @@ public class MoveGenerator : MonoBehaviour
         // bishop
         if (pieceType == Piece.PieceType.bishop)
         {
-            // right, up
-            int initialPosition = Convert.ToInt32(position.x * 8 + position.y);
-            bool hasStopped = false;
-            while (initialPosition <= 63 && initialPosition >= 0 && !hasStopped)
+            // right up
+            for (int initialPosition = Convert.ToInt32(position.x * 8 + position.y) + 9; initialPosition < 63; initialPosition += 9)
             {
-                initialPosition += 9;
-                if (initialPosition >= 0 && initialPosition <= 63 && CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour))
+                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour))
                 {
                     legalMoves.Add(GetComponent<GameManager>().tiles[initialPosition]);
                 }
                 else
                 {
-                    hasStopped = true;
+                    break;
                 }
             }
+
+            // left up
+            for (int initialPosition = Convert.ToInt32(position.x * 8 + position.y) - 7; initialPosition > 0; initialPosition -= 7)
+            {
+                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour))
+                {
+                    legalMoves.Add(GetComponent<GameManager>().tiles[initialPosition]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            int originPosition = Convert.ToInt32(8 * position.x + position.y);
+            // right down
+            for (int initialPosition = Convert.ToInt32(position.x * 8 + position.y) + 7; initialPosition < 63; initialPosition += 7)
+            {
+                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour) && GetComponent<GameManager>().tiles[initialPosition].GetComponent<Tile>().GetColour() == GetComponent<GameManager>().tiles[originPosition].GetComponent<Tile>().GetColour())
+                {
+                    legalMoves.Add(GetComponent<GameManager>().tiles[initialPosition]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // left down
+            for (int initialPosition = Convert.ToInt32(position.x * 8 + position.y) - 9; initialPosition > 0; initialPosition -= 9)
+            {
+                if (CheckLegality(initialPosition, Piece.PieceType.bishop, currentTeamColour))
+                {
+                    legalMoves.Add(GetComponent<GameManager>().tiles[initialPosition]);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        // queen
+        if (pieceType == Piece.PieceType.queen)
+        { 
+        
+        }
+
+        // king
+        if (pieceType == Piece.PieceType.king)
+        { 
+        
         }
 
         return legalMoves;
