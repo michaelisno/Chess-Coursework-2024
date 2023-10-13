@@ -1,9 +1,9 @@
-class Menu:
-    public procedure LoadScene(sceneName):
+class Menu
+    public procedure LoadScene(sceneName)
         SceneManager.LoadScene(sceneName)
     endprocedure
 
-    public procedure ExitApplication():
+    public procedure ExitApplication()
         Application.Quit()
     endprocedure
 endclass
