@@ -40,6 +40,9 @@ class Piece
     endprocedure
 
     public procedure SetColour(_colour)
-
+        colour = _colour
+        materials[] = MeshRenderer.materials
+        materials[1] = pieceMaterials[colour]
+        MeshRenderer.materials = materials
     endprocedure
 endclass
