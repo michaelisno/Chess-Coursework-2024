@@ -13,7 +13,7 @@ public class Tile : MonoBehaviour
     // Setters
     public void SetColour(int _colour) 
     { 
-        GetComponent<MeshRenderer>().material = tileMaterials[_colour]; 
+        GetComponent<MeshRenderer>().material = tileMaterials[_colour];
         if (_colour == 0 || _colour == 1)
             colour = _colour; 
     }

@@ -67,36 +67,42 @@ public class TileSelector : MonoBehaviour
             if (selectedTile == null)
             {
                 if (tile.transform.GetChild(0).gameObject.GetComponent<Piece>().GetType() != Piece.PieceType.none
-                    && tile.transform.GetChild(0).gameObject.GetComponent<Piece>().GetColour() == Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite))
+                    && tile.transform.GetChild(0).gameObject.GetComponent<Piece>().GetColour() == Convert.ToInt32(GetComponent<GameManager>().
+                    isPlayerWhite))
                 {
                     selectedTile = tile;
                     tile.GetComponent<Tile>().SetColour(3);
 
                     // generate legal moves
                     HighlightLegalTiles(GetComponent<MoveGenerator>().GenerateMoves(GetComponent<GameManager>().isPlayerWhite,
-                        selectedTile.GetComponent<Tile>().GetPosition(), selectedTile.transform.GetChild(0).GetComponent<Piece>().GetType(), selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved));
+                        selectedTile.GetComponent<Tile>().GetPosition(), selectedTile.transform.GetChild(0).GetComponent<Piece>().GetType(), 
+                        selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved));
                 }
             }
             else
             {
                 if (selectedTile == tile)
                 {
-                    selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().GetPosition().x + selectedTile.GetComponent<Tile>().GetPosition().y) % 2);
+                    selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().GetPosition().x + selectedTile.
+                        GetComponent<Tile>().GetPosition().y) % 2);
                     selectedTile = null;
                     HighlightLegalTiles(new List<GameObject>());
                 }
                 else
                 {
                     if (tile.transform.GetChild(0).gameObject.GetComponent<Piece>().GetType() != Piece.PieceType.none
-                        && tile.transform.GetChild(0).gameObject.GetComponent<Piece>().GetColour() == Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite))
+                        && tile.transform.GetChild(0).gameObject.GetComponent<Piece>().GetColour() == Convert.ToInt32(GetComponent<GameManager>().
+                        isPlayerWhite))
                     {
-                        selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().GetPosition().x + selectedTile.GetComponent<Tile>().GetPosition().y) % 2);
+                        selectedTile.GetComponent<Tile>().SetColour(Convert.ToInt32(selectedTile.GetComponent<Tile>().GetPosition().x + selectedTile.
+                            GetComponent<Tile>().GetPosition().y) % 2);
                         selectedTile = tile;
                         tile.GetComponent<Tile>().SetColour(3);
 
                         // generate legal moves
                         HighlightLegalTiles(GetComponent<MoveGenerator>().GenerateMoves(GetComponent<GameManager>().isPlayerWhite,
-                            selectedTile.GetComponent<Tile>().GetPosition(), selectedTile.transform.GetChild(0).GetComponent<Piece>().GetType(), selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved));
+                            selectedTile.GetComponent<Tile>().GetPosition(), selectedTile.transform.GetChild(0).GetComponent<Piece>().GetType(), 
+                            selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved));
                     }
                 }
             }
