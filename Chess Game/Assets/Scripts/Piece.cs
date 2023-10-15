@@ -28,7 +28,7 @@ public class Piece : MonoBehaviour
     public int GetColour() { return colour; }
 
     // Setters
-    public PieceType SetType(PieceType _type)
+    public void SetType(PieceType _type)
     {
         gameObject.SetActive(true);
         type = _type;
@@ -57,8 +57,6 @@ public class Piece : MonoBehaviour
                 GetComponent<MeshFilter>().mesh = pieceModels[5];
                 break;
         }
-
-        return type;
     }
 
     public void SetColour(int _colour)
