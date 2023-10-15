@@ -14,7 +14,8 @@ public class MoveGenerator : MonoBehaviour
         if (pieceType == Piece.PieceType.pawn)
         {
             // 1 up
-            tileIndex = Convert.ToInt32(8 * position.x + position.y + 1);
+            if (currentTeamColour) tileIndex = Convert.ToInt32(8 * position.x + position.y + 1);
+            else tileIndex = Convert.ToInt32(8 * position.x + position.y - 1);
             if (tileIndex >= 0 && tileIndex <= 63 && GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).GetComponent<Piece>().GetType()
                 == Piece.PieceType.none)
             {
@@ -24,7 +25,8 @@ public class MoveGenerator : MonoBehaviour
             // 2 up
             if (!hasPieceMoved)
             {
-                tileIndex = Convert.ToInt32(8 * position.x + position.y + 2);
+                if (currentTeamColour) tileIndex = Convert.ToInt32(8 * position.x + position.y + 2);
+                else tileIndex = Convert.ToInt32(8 * position.x + position.y - 2);
                 if (tileIndex >= 0 && tileIndex <= 63 && GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).GetComponent<Piece>().GetType()
                     == Piece.PieceType.none)
                 {
@@ -33,14 +35,16 @@ public class MoveGenerator : MonoBehaviour
             }
 
             // capture: up, left
-            tileIndex = Convert.ToInt32(8 * position.x + position.y - 7);
+            if (currentTeamColour) tileIndex = Convert.ToInt32(8 * position.x + position.y - 7);
+            else tileIndex = Convert.ToInt32(8 * position.x + position.y - 9);
             if (CheckLegality(tileIndex, Piece.PieceType.pawn, currentTeamColour))
             {
                 legalMoves.Add(GetComponent<GameManager>().tiles[tileIndex]);
             }
 
             // capture: up, right
-            tileIndex = (Convert.ToInt32(position.x) * 8) + Convert.ToInt32(position.y + 9);
+            if (currentTeamColour) tileIndex = (Convert.ToInt32(position.x) * 8) + Convert.ToInt32(position.y + 9);
+            else tileIndex = Convert.ToInt32(8 * position.x + position.y + 7);
             if (CheckLegality(tileIndex, Piece.PieceType.pawn, currentTeamColour))
             {
                 legalMoves.Add(GetComponent<GameManager>().tiles[tileIndex]);

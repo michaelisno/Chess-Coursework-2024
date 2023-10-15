@@ -357,7 +357,7 @@ MonoBehaviour:
   blackTakenPieces: []
   tilePrefab: {fileID: 8071940270748118377, guid: 2c5a0b0309ca6844694acfd0627bd8c4, type: 3}
   board: {fileID: 2013019849}
-  isPlayerWhite: 1
+  isPlayerWhite: 0
 --- !u!114 &1959670299
 MonoBehaviour:
   m_ObjectHideFlags: 0
