@@ -313,20 +313,28 @@ public class MoveGenerator : MonoBehaviour
             int currentPosition = Convert.ToInt32(position.x * 8 + position.y);
             if (CheckLegality(currentPosition + 1, Piece.PieceType.king, isPlayerWhite) && position.y < 7)
                 legalMoves.Add(GetComponent<GameManager>().tiles[currentPosition + 1]);
+                GetComponent<GameManager>().SetKingIndex(currentPosition + 1, Convert.ToInt32(isPlayerWhite));
             if (CheckLegality(currentPosition - 1, Piece.PieceType.king, isPlayerWhite) && position.y > 0)
                 legalMoves.Add(GetComponent<GameManager>().tiles[currentPosition - 1]);
+                GetComponent<GameManager>().SetKingIndex(currentPosition - 1, Convert.ToInt32(isPlayerWhite));
             if (CheckLegality(currentPosition - 7, Piece.PieceType.king, isPlayerWhite) && position.y < 7)
                 legalMoves.Add(GetComponent<GameManager>().tiles[currentPosition - 7]);
+                GetComponent<GameManager>().SetKingIndex(currentPosition - 7, Convert.ToInt32(isPlayerWhite));
             if (CheckLegality(currentPosition + 9, Piece.PieceType.king, isPlayerWhite) && position.y < 7)
                 legalMoves.Add(GetComponent<GameManager>().tiles[currentPosition + 9]);
+                GetComponent<GameManager>().SetKingIndex(currentPosition + 9, Convert.ToInt32(isPlayerWhite));
             if (CheckLegality(currentPosition + 8, Piece.PieceType.king, isPlayerWhite))
                 legalMoves.Add(GetComponent<GameManager>().tiles[currentPosition + 8]);
+                GetComponent<GameManager>().SetKingIndex(currentPosition + 8, Convert.ToInt32(isPlayerWhite));
             if (CheckLegality(currentPosition - 8, Piece.PieceType.king, isPlayerWhite))
                 legalMoves.Add(GetComponent<GameManager>().tiles[currentPosition - 8]);
+                GetComponent<GameManager>().SetKingIndex(currentPosition - 8, Convert.ToInt32(isPlayerWhite));
             if (CheckLegality(currentPosition - 9, Piece.PieceType.king, isPlayerWhite) && position.y > 0)
                 legalMoves.Add(GetComponent<GameManager>().tiles[currentPosition - 9]);
+                GetComponent<GameManager>().SetKingIndex(currentPosition - 9, Convert.ToInt32(isPlayerWhite));
             if (CheckLegality(currentPosition + 7, Piece.PieceType.king, isPlayerWhite) && position.y > 0)
                 legalMoves.Add(GetComponent<GameManager>().tiles[currentPosition + 7]);
+                GetComponent<GameManager>().SetKingIndex(currentPosition + 7, Convert.ToInt32(isPlayerWhite));
         }
 
         return legalMoves;
@@ -368,7 +376,7 @@ public class MoveGenerator : MonoBehaviour
         }
     }
 
-    private bool testCheck(int tileIndex)
+    public bool testCheck(int tileIndex)
     {
         List<GameObject> tiles = GetComponent<GameManager>().tiles;
 
@@ -379,7 +387,8 @@ public class MoveGenerator : MonoBehaviour
             if (!canMove) break;
 
             if (tiles[i].transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.none
-                && tiles[i].transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.king 
+                && tiles[i].transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.king
+                && tiles[i].transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.pawn
                 && tiles[i].transform.GetChild(0).GetComponent<Piece>().GetColour() !=
                 Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite))
             {
