@@ -13,7 +13,7 @@ public class TileSelector : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && GetComponent<GameManager>().nextTurn == Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite))
         {
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -59,6 +59,9 @@ public class TileSelector : MonoBehaviour
                 + selectedTile.GetComponent<Tile>().GetPosition().y) % 2);
             selectedTile = null;
 
+            // switch player
+            GetComponent<GameManager>().SwitchPlayer();
+        
             HighlightLegalTiles(new List<GameObject>());
         }
         else
@@ -110,7 +113,7 @@ public class TileSelector : MonoBehaviour
     }
 
     private void HighlightLegalTiles(List<GameObject> legalTiles)
-    { 
+    {
         // Reset all highlighted tiles
         foreach (GameObject tile in highlightedTiles) 
         {

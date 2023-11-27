@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MoveGenerator : MonoBehaviour
 {
-    public List<GameObject> GenerateMoves(bool isPlayerWhite, Vector2 position, Piece.PieceType pieceType, bool hasPieceMoved)
+    public List<GameObject> GenerateMoves(bool isPlayerWhite, Vector2 position, Piece.PieceType pieceType, bool hasPieceMoved, bool isChecking = false)
     {
         List<GameObject> legalMoves = new List<GameObject>();
 
@@ -23,7 +24,7 @@ public class MoveGenerator : MonoBehaviour
             }
 
             // 2 up
-            if (!hasPieceMoved)
+            if (!hasPieceMoved && !isChecking)
             {
                 if (isPlayerWhite) tileIndex = Convert.ToInt32(8 * position.x + position.y + 2);
                 else tileIndex = Convert.ToInt32(8 * position.x + position.y - 2);
@@ -343,19 +344,20 @@ public class MoveGenerator : MonoBehaviour
             {
                 case Piece.PieceType.knight:
                     return piece.GetType() == Piece.PieceType.none || (piece.GetType() != Piece.PieceType.none && piece.GetColour() 
-                        != Convert.ToInt32(isPlayerWhite));
+                        != Convert.ToInt32(isPlayerWhite)) && piece.GetType() != Piece.PieceType.king;
                 case Piece.PieceType.pawn:
-                    return piece.GetType() != Piece.PieceType.none && piece.GetColour() != Convert.ToInt32(isPlayerWhite);
+                    return piece.GetType() != Piece.PieceType.none && piece.GetColour() != Convert.ToInt32(isPlayerWhite) && 
+                        piece.GetType() != Piece.PieceType.king;
                 case Piece.PieceType.rook:
                     return piece.GetType() == Piece.PieceType.none || (piece.GetType() != Piece.PieceType.none && piece.GetColour() 
-                        != Convert.ToInt32(isPlayerWhite));
+                        != Convert.ToInt32(isPlayerWhite)) && piece.GetType() != Piece.PieceType.king;
                 case Piece.PieceType.bishop:
                     return ((piece.GetType() == Piece.PieceType.none) || piece.GetType() != Piece.PieceType.none && piece.GetColour() 
                         != Convert.ToInt32(isPlayerWhite)) && tile.GetColour() == GetComponent<GameManager>().
-                        tiles[originPosition].GetComponent<Tile>().GetColour();
+                        tiles[originPosition].GetComponent<Tile>().GetColour() && piece.GetType() != Piece.PieceType.king;
                 case Piece.PieceType.king:
-                    return piece.GetType() == Piece.PieceType.none || (piece.GetType() != Piece.PieceType.none && piece.GetColour() 
-                        != Convert.ToInt32(isPlayerWhite));
+                    return (piece.GetType() == Piece.PieceType.none || (piece.GetType() != Piece.PieceType.none && piece.GetColour()
+                        != Convert.ToInt32(isPlayerWhite)) && piece.GetType() != Piece.PieceType.king) && testCheck(tileIndex);
                 default:
                     return false;
             }
@@ -364,5 +366,38 @@ public class MoveGenerator : MonoBehaviour
         {
             return false;
         }
+    }
+
+    private bool testCheck(int tileIndex)
+    {
+        List<GameObject> tiles = GetComponent<GameManager>().tiles;
+
+        bool canMove = true;
+
+        for (int i = 0; i < tiles.Count(); i++)
+        {
+            if (!canMove) break;
+
+            if (tiles[i].transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.none
+                && tiles[i].transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.king 
+                && tiles[i].transform.GetChild(0).GetComponent<Piece>().GetColour() !=
+                Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite))
+            {
+                List<GameObject> legalMoves = GenerateMoves(!GetComponent<GameManager>().isPlayerWhite, 
+                    tiles[i].GetComponent<Tile>().GetPosition(), tiles[i].transform.GetChild(0).GetComponent<Piece>().
+                    GetType(), tiles[i].transform.GetChild(0).GetComponent<Piece>().hasPieceMoved, true);
+
+                for (int j = 0; j < legalMoves.Count(); j++)
+                {
+                    if (tileIndex == GetComponent<GameManager>().tiles.IndexOf(legalMoves[j]))
+                    {
+                        canMove = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return canMove;
     }
 }
