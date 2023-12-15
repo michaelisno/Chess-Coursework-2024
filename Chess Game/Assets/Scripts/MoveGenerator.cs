@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class MoveGenerator : MonoBehaviour
 {
-    public List<GameObject> GenerateMoves(bool isPlayerWhite, Vector2 position, Piece.PieceType pieceType, bool hasPieceMoved, bool isChecking = false)
+    public List<GameObject> GenerateMoves(bool isPlayerWhite, Vector2 position, Piece.PieceType pieceType, 
+        bool hasPieceMoved, bool isChecking = false)
     {
         List<GameObject> legalMoves = new List<GameObject>();
 
@@ -17,7 +18,8 @@ public class MoveGenerator : MonoBehaviour
             // 1 up
             if (isPlayerWhite) tileIndex = Convert.ToInt32(8 * position.x + position.y + 1);
             else tileIndex = Convert.ToInt32(8 * position.x + position.y - 1);
-            if (tileIndex >= 0 && tileIndex <= 63 && GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).GetComponent<Piece>().
+            if (tileIndex >= 0 && tileIndex <= 63 && GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).
+                GetComponent<Piece>().
                 GetType() == Piece.PieceType.none)
             {
                 legalMoves.Add(GetComponent<GameManager>().tiles[tileIndex]);
@@ -28,7 +30,8 @@ public class MoveGenerator : MonoBehaviour
             {
                 if (isPlayerWhite) tileIndex = Convert.ToInt32(8 * position.x + position.y + 2);
                 else tileIndex = Convert.ToInt32(8 * position.x + position.y - 2);
-                if (tileIndex >= 0 && tileIndex <= 63 && GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).GetComponent<Piece>().
+                if (tileIndex >= 0 && tileIndex <= 63 && GetComponent<GameManager>().tiles[tileIndex].transform.GetChild(0).
+                    GetComponent<Piece>().
                     GetType() == Piece.PieceType.none)
                 {
                     legalMoves.Add(GetComponent<GameManager>().tiles[tileIndex]);
@@ -388,7 +391,6 @@ public class MoveGenerator : MonoBehaviour
 
             if (tiles[i].transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.none
                 && tiles[i].transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.king
-                && tiles[i].transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.pawn
                 && tiles[i].transform.GetChild(0).GetComponent<Piece>().GetColour() !=
                 Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite))
             {

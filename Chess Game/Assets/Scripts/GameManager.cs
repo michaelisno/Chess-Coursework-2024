@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -46,7 +47,8 @@ public class GameManager : MonoBehaviour
     private GameObject CreateTile(int xPosition, int yPosition)
     {
         // Create tile object
-        GameObject newTile = Instantiate(tilePrefab, new Vector3(xPosition, 0, yPosition), Quaternion.identity, board.transform);
+        GameObject newTile = Instantiate(tilePrefab, new Vector3(xPosition, 0, yPosition), Quaternion.identity, 
+            board.transform);
 
         // Set tile attributes
         newTile.name = (8 * xPosition + yPosition).ToString();
@@ -59,16 +61,6 @@ public class GameManager : MonoBehaviour
 
     public void SwitchPlayer()
     {
-        // test check
-        if (nextTurn == 1 && !GetComponent<MoveGenerator>().testCheck(whiteKingIndex))
-        {
-            GameOver(0, 0);
-        }
-        if (nextTurn == 0 && !GetComponent<MoveGenerator>().testCheck(blackKingIndex)) 
-        {
-            GameOver(1, 0);
-        }
-
         // flip nextTurn
         nextTurn = Convert.ToInt32(!Convert.ToBoolean(nextTurn));
 
