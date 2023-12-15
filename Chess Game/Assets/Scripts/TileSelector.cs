@@ -79,7 +79,7 @@ public class TileSelector : MonoBehaviour
                     // generate legal moves
                     HighlightLegalTiles(GetComponent<MoveGenerator>().GenerateMoves(GetComponent<GameManager>().isPlayerWhite,
                         selectedTile.GetComponent<Tile>().GetPosition(), selectedTile.transform.GetChild(0).GetComponent<Piece>().GetType(), 
-                        selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved));
+                        selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved, true));
                 }
             }
             else
@@ -105,7 +105,7 @@ public class TileSelector : MonoBehaviour
                         // generate legal moves
                         HighlightLegalTiles(GetComponent<MoveGenerator>().GenerateMoves(GetComponent<GameManager>().isPlayerWhite,
                             selectedTile.GetComponent<Tile>().GetPosition(), selectedTile.transform.GetChild(0).GetComponent<Piece>().GetType(), 
-                            selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved));
+                            selectedTile.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved, true));
                     }
                 }
             }

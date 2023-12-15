@@ -61,16 +61,85 @@ public class GameManager : MonoBehaviour
 
     public void SwitchPlayer()
     {
-        // flip nextTurn
-        nextTurn = Convert.ToInt32(!Convert.ToBoolean(nextTurn));
-
-        if (nextTurn != Convert.ToInt32(isPlayerWhite))
+        if (DetectCheck(nextTurn) == true)
         {
-            // Run an AI move when switched
-            GetComponent<AIMovement>().MoveAI();
-            Debug.Log("ai");
+            // flip nextTurn
+            nextTurn = Convert.ToInt32(!Convert.ToBoolean(nextTurn));
+
+            if (nextTurn != Convert.ToInt32(isPlayerWhite))
+            {
+                // Run an AI move when switched
+                GetComponent<AIMovement>().MoveAI();
+            }
         }
     }
+
+    private bool DetectCheck(int nextPlayer)
+    {
+        if (nextPlayer == 1)
+        {
+            Debug.Log("detecting check");
+            // black, ai
+            List<GameObject> whitePieces = new List<GameObject>();
+
+            foreach (GameObject tile in tiles)
+            {
+                if (tile.transform.GetChild(0).GetComponent<Piece>().GetType() != Piece.PieceType.none &&
+                    tile.transform.GetChild(0).GetComponent<Piece>().GetColour() == 1)
+                {
+                    whitePieces.Add(tile);
+                    Debug.Log("found white piece");
+                }
+            }
+
+            List<List<GameObject>> allWhiteLegalMoves = new List<List<GameObject>>();
+
+            Debug.Log("whitePices num" + whitePieces.Count.ToString());
+
+            foreach (GameObject piece in whitePieces)
+            {
+                allWhiteLegalMoves.Add(GetComponent<MoveGenerator>().GenerateMoves(true, piece.GetComponent<Tile>().GetPosition(), 
+                    piece.transform.GetChild(0).GetComponent<Piece>().GetType(),
+                    piece.transform.GetChild(0).GetComponent<Piece>().hasPieceMoved, false));
+                Debug.Log("getting legal moves");
+            }
+            
+            List<List<int>> whiteLegalIndexes = new List<List<int>>();
+
+            foreach (List<GameObject> move in allWhiteLegalMoves) 
+            {
+                Debug.Log("A");
+                List<int> indexes = new List<int>();
+                foreach (GameObject moves in move)
+                {
+                    indexes.Add(Convert.ToInt32(8 * moves.GetComponent<Tile>().GetPosition().x + 
+                        moves.GetComponent<Tile>().GetPosition().y));
+                    Debug.Log("getting indexes of legal moves");
+                }
+                
+                whiteLegalIndexes.Add(indexes);
+            }
+
+            for (int i = 0; i < whiteLegalIndexes.Count; i++) {
+                if (whiteLegalIndexes[i].Contains(blackKingIndex))
+                {
+                    HandleCheck(0, Convert.ToInt32(8*whitePieces[i].transform.GetComponent<Tile>().GetPosition().x + whitePieces[i].transform.GetComponent<Tile>().GetPosition().y));
+                    return false;
+                } 
+            }
+        }
+        return true;
+    }
+    
+    private void HandleCheck(int whichPlayerChecked, int culpretIndex)
+    {
+        // black king checked
+        if (whichPlayerChecked == 0)
+        {
+            Debug.Log("Black King Checked by piece at index: " + culpretIndex);
+        }
+    }
+
 
     private void GameOver(int playerWon, int reason)
     {

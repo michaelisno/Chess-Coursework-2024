@@ -43,7 +43,7 @@ public class AIMovement : MonoBehaviour
             legalMoves = GetComponent<MoveGenerator>().GenerateMoves(!GetComponent<GameManager>().
                 isPlayerWhite, myPieces[selectedPiece].GetComponent<Tile>().GetPosition(),
                 myPieces[selectedPiece].transform.GetChild(0).GetComponent<Piece>().GetType(),
-                myPieces[selectedPiece].transform.GetChild(0).GetComponent<Piece>().hasPieceMoved);
+                myPieces[selectedPiece].transform.GetChild(0).GetComponent<Piece>().hasPieceMoved, true);
 
             if (legalMoves.Count > 0) foundMoves = true;
         }
