@@ -31,7 +31,12 @@ public class GameManager : MonoBehaviour
     {
         // Instantiate tile object at x,y
         GameObject tile = Instantiate(tilePrefab, new Vector3(x, 0, y), Quaternion.identity, chessBoard.transform);
+        
         tile.name = x.ToString() + ":" + y.ToString();
+
+        tile.GetComponent<TileManager>().SetPosition(x, y);
+        tile.GetComponent<TileManager>().SetColour((x + y) % 2);
+        tile.GetComponent<TileManager>().InitializePiece();
 
         return tile;
     }
