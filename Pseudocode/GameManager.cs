@@ -1,34 +1,25 @@
 class GameManager
-    public tiles
-    public whiteTakenPieces, blackTakenPieces
-    public isPlayerWhite = True
-
-    private tilePrefab, board
+    public tiles = [8,8]
+    public tilePrefab
+    public chessBoard
 
     private procedure Start()
-        for xPosition = 0 to 7
-            for yPosition = 0 to 7
-                tiles.Append(CreateTile(xPosition, yPosition))
-            next yPosition
-        next xPosition
+        CreateBoard()
     endprocedure
 
-    private function CreateTile()
-        newTile = Instantiate(tilePrefab, (xPosition, 0, yPosition), Quaternion.identity, board.transform)
+    private procedure CreateBoard()
+        for x = 0 to 7
+            for y = 0 to 7
+                tiles[x,y] = CreateTile(x, y)
+            next y
+        next x
+    endprocedure
 
-        newTile.name = str(8 * xPosition * yPosition)
-        newTile.tile.SetColour((xPosition + yPosition)%2)
-        newTile.tile.SetPosition(xPosition, yPosition);
-        newTile.tile.InitiatePieces()
+    private function CreateTile(x, y)
+        tile = Instantiate(tilePrefab, (x,0,y), chessBoard)
+        tile.name = str(x) + ":" + str(y)
 
-        return newTile
+        return tile
     endfunction
 endclass
-
-
-
-
-
-
-
 

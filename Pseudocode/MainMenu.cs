@@ -1,13 +1,10 @@
-class Menu
+class MainMenu
     public procedure LoadScene(sceneName)
         SceneManager.LoadScene(sceneName)
     endprocedure
 
-    public procedure ExitApplication()
+    public procedure QuitGame()
         Application.Quit()
     endprocedure
 endclass
-
-
-
 
