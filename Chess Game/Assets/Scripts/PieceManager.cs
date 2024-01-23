@@ -16,9 +16,12 @@ public class PieceManager : MonoBehaviour
     public Mesh[] pieceMeshes;
     public Material[] pieceMaterials;
 
-    private PieceType pieceType = PieceType.none;
+    private PieceType pieceType;
     private int colour;
 
+    private bool hasPieceMoved = false;
+
+    // Setters
     public void SetPieceColour(int _colour)
     { 
         colour = _colour;
@@ -31,14 +34,20 @@ public class PieceManager : MonoBehaviour
     { 
         pieceType = newType;
 
-        if (pieceType != PieceType.none)
-        {
-            gameObject.SetActive(true);
-            GetComponent<MeshFilter>().mesh = pieceMeshes[(int)pieceType-1];
-        }
-        else 
+        if (pieceType == PieceType.none)
         {
             gameObject.SetActive(false);
+            return;
         }
+
+        GetComponent<MeshFilter>().mesh = pieceMeshes[(int)pieceType - 1];
+        gameObject.SetActive(true);
     }
+
+    public void SetHasPieceMoved(bool _hasPieceMoved) { hasPieceMoved = _hasPieceMoved; }
+
+    // Getters
+    public int GetPieceColour() { return colour; }
+    public PieceType GetPieceType() { return pieceType; }
+    public bool GetHasPieceMoved() { return hasPieceMoved; }
 }

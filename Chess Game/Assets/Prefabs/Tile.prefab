@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 5}
-  m_LocalScale: {x: 1, y: 0.01, z: 1}
+  m_LocalScale: {x: 0.00060006, y: 0.0000060006, z: 0.00060006}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8388572464351686083}
@@ -122,6 +122,8 @@ MonoBehaviour:
   tileMaterials:
   - {fileID: 2100000, guid: bb057c3a42842a256b514b26d169642f, type: 2}
   - {fileID: 2100000, guid: 03b98158e5b327203a85f880a94cb6bb, type: 2}
+  - {fileID: 2100000, guid: 8db9fcf77905b194083c5ecd4d823e3a, type: 2}
+  - {fileID: 2100000, guid: 788970a1f0f9ebe4db06170f0e9a9e51, type: 2}
   pieceManager: {fileID: 130035154456779645}
 --- !u!1 &6812269887893367210
 GameObject:
@@ -152,7 +154,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1000, y: 1000, z: 100000}
+  m_LocalScale: {x: 1500, y: 1500, z: 150000}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7089372354609200399}

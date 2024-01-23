@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 
     public GameObject tilePrefab;
     public GameObject chessBoard;
+
+    public bool isPlayerWhite = true;
     
     private void Start()
     {
@@ -34,8 +36,8 @@ public class GameManager : MonoBehaviour
         
         tile.name = x.ToString() + ":" + y.ToString();
 
-        tile.GetComponent<TileManager>().SetPosition(x, y);
-        tile.GetComponent<TileManager>().SetColour((x + y) % 2);
+        tile.GetComponent<TileManager>().SetTilePosition(x, y);
+        tile.GetComponent<TileManager>().SetTileColour((x + y) % 2);
         tile.GetComponent<TileManager>().InitializePiece();
 
         return tile;
