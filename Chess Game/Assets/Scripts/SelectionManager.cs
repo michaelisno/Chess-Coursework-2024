@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
@@ -15,67 +14,55 @@ public class SelectionManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-            {                
-                // no tile currently selected
+            {
                 if (selectedTile == null)
-                { 
-                    SelectNewPiece();
-                }
-                else if (selectedTile != null)
                 {
-                    // case one: currently selected tile == newly selected tile
-                    if (hit.collider.gameObject == selectedTile)
-                    {
-                        // reset colour
-                        Vector2 tilePosition = selectedTile.GetComponent<TileManager>().GetTilePosition();
-                        selectedTile.GetComponent<TileManager>().SetTileColour(Convert.ToInt32(tilePosition.x + tilePosition.y) % 2);
+                    SelectNewPiece();
+                    return;
+                }
 
-                        // remove all highlighted legal tiles
-                        HighlightLegalMoves(new List<GameObject>());
+                // reset colour and currently selected tile
+                Vector2 tilePosition = selectedTile.GetComponent<TileManager>().GetTilePosition();
+                PieceManager oldPiece = selectedTile.transform.GetChild(0).GetComponent<PieceManager>();
+                PieceManager newPiece = hit.collider.transform.GetChild(0).GetComponent<PieceManager>();
 
-                        // deselect tile
-                        selectedTile = null;
-                    }
+                if (newPiece.GetPieceType() != PieceManager.PieceType.none || highlightedTiles.Contains(hit.collider.gameObject)) 
+                {
+                    selectedTile.GetComponent<TileManager>().SetTileColour(Convert.ToInt32(tilePosition.x + tilePosition.y) % 2);
+                    selectedTile = null; 
+                }
 
-                    // case two: clicked tile not selected tile and clicked tile in legal moves, select new tile
-                    else if (hit.collider.gameObject != selectedTile && highlightedTiles.Contains(hit.collider.gameObject))
-                    {
-                        // Set new piece info to old piece info
-                        PieceManager oldPiece = selectedTile.transform.GetChild(0).GetComponent<PieceManager>();
-                        PieceManager newPiece = hit.collider.transform.GetChild(0).GetComponent<PieceManager>();
+                // case one: currently selected tile == newly selected tile
+                if (hit.collider.gameObject == oldPiece.transform.parent.gameObject)
+                {
+                    // remove all highlighted legal tiles
+                    HighlightLegalMoves(new List<GameObject>());
+                    return;
+                }
 
-                        newPiece.SetHasPieceMoved(oldPiece.GetHasPieceMoved());
-                        newPiece.SetPieceColour(oldPiece.GetPieceColour());
-                        newPiece.SetPieceType(oldPiece.GetPieceType());
+                // case two: clicked tile not selected tile and clicked tile in legal moves, select new tile
+                if (highlightedTiles.Contains(hit.collider.gameObject))
+                {
+                    // Set new piece info to old piece info   
+                    newPiece.SetHasPieceMoved(true);
+                    newPiece.SetPieceColour(oldPiece.GetPieceColour());
+                    newPiece.SetPieceType(oldPiece.GetPieceType());
 
-                        // Set old piece info to no piece
-                        oldPiece.SetPieceType(PieceManager.PieceType.none);
-                        oldPiece.SetHasPieceMoved(false);
+                    // Set old piece info to no piece
+                    oldPiece.SetPieceType(PieceManager.PieceType.none);
+                    oldPiece.SetHasPieceMoved(false);
 
-                        // Reset colours
-                        Vector2 oldTilePosition = selectedTile.GetComponent<TileManager>().GetTilePosition();
-                        selectedTile.GetComponent<TileManager>().SetTileColour(Convert.ToInt32(oldTilePosition.x + oldTilePosition.y) % 2);
-                        HighlightLegalMoves(new List<GameObject>());
-
-                        selectedTile = null;
-                    }
-                    // case three: clicked tile not selected tile and clicked tile is friendly, deselect current tile, select new tile
-                    else if (hit.collider.gameObject != selectedTile && 
-                        Convert.ToBoolean(hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour()) 
-                        == GetComponent<GameManager>().isPlayerWhite)
-                    {
-                        // reset colour
-                        Vector2 tilePosition = selectedTile.GetComponent<TileManager>().GetTilePosition();
-                        selectedTile.GetComponent<TileManager>().SetTileColour(Convert.ToInt32(tilePosition.x + tilePosition.y) % 2);
-
-                        // remove all highlighted legal tiles
-                        HighlightLegalMoves(new List<GameObject>());
-
-                        // deselect tile
-                        selectedTile = null;
-
-                        SelectNewPiece();
-                    }
+                    // remove all highlighted legal tiles
+                    HighlightLegalMoves(new List<GameObject>());
+                    return;
+                }
+                // case three: clicked tile not selected tile and clicked tile is friendly, deselect current tile, select new tile
+                else if (Convert.ToBoolean(newPiece.GetPieceColour()) == GetComponent<GameManager>().isPlayerWhite)
+                {
+                    // remove all highlighted legal tiles
+                    HighlightLegalMoves(new List<GameObject>());
+                    SelectNewPiece();
+                    return;
                 }
             }
         }
@@ -97,7 +84,6 @@ public class SelectionManager : MonoBehaviour
         List<GameObject> legalMoves = GetComponent<MoveGenerator>().GetMoves(selectedTile);
 
         if (legalMoves.Count > 0) { HighlightLegalMoves(legalMoves); }
-        else { Debug.Log("NO LEGAL MOVES AVAILABLE."); }
     }
 
     private void HighlightLegalMoves(List<GameObject> legalMoves)
