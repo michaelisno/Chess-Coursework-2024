@@ -18,7 +18,7 @@ public class SelectionManager : MonoBehaviour
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
                 if (selectedTile == null)
-                {
+                { 
                     SelectNewPiece();
                     return;
                 }
@@ -104,7 +104,8 @@ public class SelectionManager : MonoBehaviour
     {
         // Selected tile is empty or enemy piece, return
         if (hit.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.none || 
-            hit.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour() != Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite)) 
+            hit.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour() != Convert.ToInt32(GetComponent<GameManager>().
+            isPlayerWhite)) 
             return;
 
         selectedTile = hit.collider.gameObject;
