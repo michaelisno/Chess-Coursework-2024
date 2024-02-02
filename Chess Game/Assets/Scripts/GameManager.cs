@@ -1,18 +1,29 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject[,] tiles = new GameObject[8, 8];
 
+    public List<GameObject> takenWhitePieces, takenBlackPieces;
+
     public GameObject tilePrefab;
     public GameObject chessBoard;
 
     public bool isPlayerWhite = true;
-    
+
     private void Start()
     {
         // Initiate tiles and pieces
         CreateBoard();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Debug.Log(takenBlackPieces[takenBlackPieces.Count-1].GetComponent<PieceManager>().GetPieceType());
+        }
     }
 
     private void CreateBoard()

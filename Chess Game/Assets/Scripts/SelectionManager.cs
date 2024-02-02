@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
@@ -41,7 +43,8 @@ public class SelectionManager : MonoBehaviour
                 }
 
                 // case two: clicked tile not selected tile and clicked tile in legal moves, select new tile
-                if (highlightedTiles.Contains(hit.collider.gameObject))
+                if (highlightedTiles.Contains(hit.collider.gameObject) 
+                    && hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.none)
                 {
                     // Set new piece info to old piece info   
                     newPiece.SetHasPieceMoved(true);
@@ -62,6 +65,35 @@ public class SelectionManager : MonoBehaviour
                     // remove all highlighted legal tiles
                     HighlightLegalMoves(new List<GameObject>());
                     SelectNewPiece();
+                    return;
+                }
+                // case four: clicked tile was legal move hence take enemy piece and move
+                if (highlightedTiles.Contains(hit.collider.gameObject)
+                    && hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() != PieceManager.PieceType.none
+                    && Convert.ToBoolean(hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour())
+                    != GetComponent<GameManager>().isPlayerWhite)
+                {
+
+                    GameObject pieceToTake = hit.transform.GetChild(0).gameObject.CloneViaFakeSerialization();
+                    pieceToTake.name = pieceToTake.GetComponent<PieceManager>().GetPieceType().ToString();
+
+                    // take piece
+                    if (GetComponent<GameManager>().isPlayerWhite)
+                        GetComponent<GameManager>().takenBlackPieces.Add(pieceToTake);
+                    else
+                        GetComponent<GameManager>().takenWhitePieces.Append(pieceToTake);
+
+                    // Set new piece info to old piece info   
+                    newPiece.SetHasPieceMoved(true);
+                    newPiece.SetPieceColour(oldPiece.GetPieceColour());
+                    newPiece.SetPieceType(oldPiece.GetPieceType());
+
+                    // Set old piece info to no piece
+                    oldPiece.SetPieceType(PieceManager.PieceType.none);
+                    oldPiece.SetHasPieceMoved(false);
+
+                    // remove all highlighted legal tiles
+                    HighlightLegalMoves(new List<GameObject>());
                     return;
                 }
             }
