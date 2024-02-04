@@ -13,7 +13,7 @@ public class SelectionManager : MonoBehaviour
     private void Update()
     {
         // Click left mouse button
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && (GetComponent<GameManager>().isWhiteMoving == GetComponent<GameManager>().isPlayerWhite))
         {
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
@@ -28,7 +28,8 @@ public class SelectionManager : MonoBehaviour
                 PieceManager oldPiece = selectedTile.transform.GetChild(0).GetComponent<PieceManager>();
                 PieceManager newPiece = hit.collider.transform.GetChild(0).GetComponent<PieceManager>();
 
-                if (newPiece.GetPieceType() != PieceManager.PieceType.none || highlightedTiles.Contains(hit.collider.gameObject)) 
+                if ((newPiece.GetPieceType() != PieceManager.PieceType.none && Convert.ToBoolean(newPiece.GetPieceColour()) 
+                    == GetComponent<GameManager>().isPlayerWhite) || highlightedTiles.Contains(hit.collider.gameObject)) 
                 {
                     selectedTile.GetComponent<TileManager>().SetTileColour(Convert.ToInt32(tilePosition.x + tilePosition.y) % 2);
                     selectedTile = null; 
@@ -57,6 +58,7 @@ public class SelectionManager : MonoBehaviour
 
                     // remove all highlighted legal tiles
                     HighlightLegalMoves(new List<GameObject>());
+                    GetComponent<GameManager>().PieceMoved();
                     return;
                 }
                 // case three: clicked tile not selected tile and clicked tile is friendly, deselect current tile, select new tile
@@ -81,7 +83,7 @@ public class SelectionManager : MonoBehaviour
                     if (GetComponent<GameManager>().isPlayerWhite)
                         GetComponent<GameManager>().takenBlackPieces.Add(pieceToTake);
                     else
-                        GetComponent<GameManager>().takenWhitePieces.Append(pieceToTake);
+                        GetComponent<GameManager>().takenWhitePieces.Add(pieceToTake);
 
                     // Set new piece info to old piece info   
                     newPiece.SetHasPieceMoved(true);
@@ -94,6 +96,8 @@ public class SelectionManager : MonoBehaviour
 
                     // remove all highlighted legal tiles
                     HighlightLegalMoves(new List<GameObject>());
+                    GetComponent<GameManager>().PieceMoved();
+
                     return;
                 }
             }

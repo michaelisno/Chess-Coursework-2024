@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MoveGenerator : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class MoveGenerator : MonoBehaviour
 
     private bool isPlayerWhite;
 
-    public List<GameObject> GetMoves(GameObject selectedTile, bool ignoreKing = false)
+    public List<GameObject> GetMoves(GameObject selectedTile, bool ignoreKing = false, bool _isPlayerWhite = true)
     {
         // References to tile and piece
         TileManager tile = selectedTile.GetComponent<TileManager>();
@@ -22,16 +23,21 @@ public class MoveGenerator : MonoBehaviour
         bool hasPieceMoved = piece.GetHasPieceMoved();
         tiles = gameManager.tiles;
 
-        return GenerateLegalMoves(pieceType, position, tiles, hasPieceMoved, piece, ignoreKing);
-    }
-
-    private List<GameObject> GenerateLegalMoves(PieceManager.PieceType pieceType, Vector2 position, GameObject[,] tiles, bool hasPieceMoved, PieceManager piece, bool ignoreKing)
-    {
         isPlayerWhite = GetComponent<GameManager>().isPlayerWhite;
 
         if (ignoreKing)
             isPlayerWhite = !GetComponent<GameManager>().isPlayerWhite;
 
+        if (_isPlayerWhite != GetComponent<GameManager>().isPlayerWhite)
+        {
+            isPlayerWhite = false;
+        }
+
+        return GenerateLegalMoves(pieceType, position, tiles, hasPieceMoved, piece, ignoreKing);
+    }
+
+    private List<GameObject> GenerateLegalMoves(PieceManager.PieceType pieceType, Vector2 position, GameObject[,] tiles, bool hasPieceMoved, PieceManager piece, bool ignoreKing)
+    {
         List<GameObject> legalMoves = new List<GameObject>();
 
         // pawn
@@ -397,7 +403,6 @@ public class MoveGenerator : MonoBehaviour
                     {
                         if (potentialLegalMoves.Contains(legalMove))
                         {
-                            Debug.Log(tile.name + " is conflicting the king at " + legalMove.name);
                             potentialLegalMoves.Remove(legalMove);
                         }
                     }

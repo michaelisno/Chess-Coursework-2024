@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public GameObject chessBoard;
 
     public bool isPlayerWhite = true;
+    public bool isWhiteMoving = true;
 
     private void Start()
     {
@@ -18,11 +19,14 @@ public class GameManager : MonoBehaviour
         CreateBoard();
     }
 
-    private void Update()
+    public void PieceMoved()
     {
-        if (Input.GetKeyDown(KeyCode.K))
+        isWhiteMoving = !isWhiteMoving;
+
+        if (isWhiteMoving != isPlayerWhite)
         {
-            Debug.Log(takenBlackPieces[takenBlackPieces.Count-1].GetComponent<PieceManager>().GetPieceType());
+            // enemy is moving, run AI move
+            GetComponent<AIMovement>().Move();
         }
     }
 
