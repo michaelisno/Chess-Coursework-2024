@@ -47,6 +47,21 @@ public class SelectionManager : MonoBehaviour
                 if (highlightedTiles.Contains(hit.collider.gameObject) 
                     && hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.none)
                 {
+                    if (oldPiece.GetPieceType() == PieceManager.PieceType.king)
+                    {
+                        Debug.Log("is king");
+                        if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour() == 0)
+                        {
+                            GetComponent<GameManager>().blackKingPosition =
+                                newPiece.GetComponentInParent<TileManager>().GetTilePosition();
+                        }
+                        else
+                        {
+                            GetComponent<GameManager>().whiteKingPosition =
+                                newPiece.GetComponentInParent<TileManager>().GetTilePosition();
+                        }
+                    }
+
                     // Set new piece info to old piece info   
                     newPiece.SetHasPieceMoved(true);
                     newPiece.SetPieceColour(oldPiece.GetPieceColour());
@@ -75,6 +90,20 @@ public class SelectionManager : MonoBehaviour
                     && Convert.ToBoolean(hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour())
                     != GetComponent<GameManager>().isPlayerWhite)
                 {
+                    if (oldPiece.GetPieceType() == PieceManager.PieceType.king)
+                    {
+                        Debug.Log("is king");
+                        if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour() == 0)
+                        {
+                            GetComponent<GameManager>().blackKingPosition =
+                                newPiece.GetComponentInParent<TileManager>().GetTilePosition();
+                        }
+                        else
+                        {
+                            GetComponent<GameManager>().whiteKingPosition =
+                                newPiece.GetComponentInParent<TileManager>().GetTilePosition();
+                        }
+                    }
 
                     GameObject pieceToTake = hit.transform.GetChild(0).gameObject.CloneViaFakeSerialization();
                     pieceToTake.name = pieceToTake.GetComponent<PieceManager>().GetPieceType().ToString();

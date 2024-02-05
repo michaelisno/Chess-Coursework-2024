@@ -36,7 +36,8 @@ public class MoveGenerator : MonoBehaviour
         return GenerateLegalMoves(pieceType, position, tiles, hasPieceMoved, piece, ignoreKing);
     }
 
-    private List<GameObject> GenerateLegalMoves(PieceManager.PieceType pieceType, Vector2 position, GameObject[,] tiles, bool hasPieceMoved, PieceManager piece, bool ignoreKing)
+    private List<GameObject> GenerateLegalMoves(PieceManager.PieceType pieceType, Vector2 position, 
+        GameObject[,] tiles, bool hasPieceMoved, PieceManager piece, bool ignoreKing)
     {
         List<GameObject> legalMoves = new List<GameObject>();
 
@@ -346,7 +347,6 @@ public class MoveGenerator : MonoBehaviour
             if (CheckMove(new Vector2(position.x, position.y + 1))
                 || CheckMove(new Vector2(position.x, position.y + 1), true))
             {
-                Debug.Log("u1");
                 potentialLegalMoves.Add(tiles[(int)position.x, (int)position.y + 1]);
             }
             // 1u1r
@@ -395,7 +395,8 @@ public class MoveGenerator : MonoBehaviour
             // Get List of all enemy pieces' legal moves
             foreach (GameObject tile in tiles)
             {
-                if (tile.transform.GetChild(0).gameObject.activeInHierarchy && Convert.ToBoolean(tile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour())
+                if (tile.transform.GetChild(0).gameObject.activeInHierarchy && 
+                    Convert.ToBoolean(tile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour())
                     != GetComponent<GameManager>().isPlayerWhite)
                 {
                     List<GameObject> tempLegalMoves = GetMoves(tile, true);
@@ -431,7 +432,8 @@ public class MoveGenerator : MonoBehaviour
             if (newPos.x >= 0 && newPos.x <= 7 && newPos.y >= 0 && newPos.y <= 7)
                 return tiles[(int)newPos.x, (int)newPos.y].
                     transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() != PieceManager.PieceType.none 
-                    && Convert.ToBoolean(tiles[(int)newPos.x, (int)newPos.y].transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour()) 
+                    && Convert.ToBoolean(tiles[(int)newPos.x, (int)newPos.y].transform.GetChild(0).
+                    GetComponent<PieceManager>().GetPieceColour()) 
                     != isPlayerWhite;
             else
                 return false;
