@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -33,6 +34,9 @@ public class GameManager : MonoBehaviour
         // Initiate tiles and pieces
         CreateBoard();
         StartCoroutine(Timer());
+
+        if (!isPlayerWhite)
+            GetComponent<AIMovement>().Move();
     }
 
     IEnumerator Timer()
@@ -82,16 +86,40 @@ public class GameManager : MonoBehaviour
     {
         isWhiteMoving = !isWhiteMoving;
 
-        DetectCheck(Convert.ToInt32(isWhiteMoving));
+        GameObject checker = DetectCheck(Convert.ToInt32(isWhiteMoving));
 
-        if (isWhiteMoving != isPlayerWhite)
+        if (checker == null)
         {
-            // enemy is moving, run AI move
-            GetComponent<AIMovement>().Move();
+            if (isWhiteMoving != isPlayerWhite)
+            {
+                // enemy is moving, run AI move
+                GetComponent<AIMovement>().Move();
+            }
         }
+        else
+        {
+            if (isWhiteMoving == false)
+            {
+                // black king checked
+                Debug.Log("GAME STOPPED: BLACK KING CHECKED");
+                if (isPlayerWhite)
+                {
+                    Debug.Log("player is white");
+                    // player is white, ie, black is AI
+                    GetComponent<AIMovement>().RunDecheckMove(tiles[(int)blackKingPosition.x, (int)blackKingPosition.y], false, checker);
+                }
+            }
+            else 
+            {
+                // white king checked
+                Debug.Log("GAME STOPPED: WHITE KING CHECKED");
+            }
+        }
+
+        checker = null;
     }
 
-    private void DetectCheck(int whichPlayer)
+    private GameObject DetectCheck(int whichPlayer)
     {
         // whichPlayer -> 1 is white, 0 is black
         if (whichPlayer == 0)
@@ -100,23 +128,35 @@ public class GameManager : MonoBehaviour
             foreach (GameObject tile in tiles)
             {
                 if (tile.transform.GetChild(0).gameObject.activeInHierarchy &&
-                    Convert.ToBoolean(tile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour())
-                    != isPlayerWhite)
+                    Convert.ToBoolean(tile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour()) == true)
                 {
-                    Debug.Log("hello");
-                    List<GameObject> tempLegalMoves = GetComponent<MoveGenerator>().GetMoves(tile, true);
+                    List<GameObject> tempLegalMoves = GetComponent<MoveGenerator>().GetMoves(tile, false, true);
                     if (tempLegalMoves.Contains(tiles[(int)blackKingPosition.x, (int)blackKingPosition.y]))
                     {
-                        Debug.Log("black king checked");
+                        return tile;
                     }
                 }
             }
         }
 
         if (whichPlayer == 1)
-        { 
-            
+        {
+            // Get List of all enemy pieces' legal moves
+            foreach (GameObject tile in tiles)
+            {
+                if (tile.transform.GetChild(0).gameObject.activeInHierarchy &&
+                    Convert.ToBoolean(tile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour()) == false)
+                {
+                    List<GameObject> tempLegalMoves = GetComponent<MoveGenerator>().GetMoves(tile, false, false);
+                    if (tempLegalMoves.Contains(tiles[(int)whiteKingPosition.x, (int)whiteKingPosition.y]))
+                    {
+                        return tile;
+                    }
+                }
+            }
         }
+
+        return null;
     }
 
     private void CreateBoard()

@@ -92,7 +92,6 @@ public class SelectionManager : MonoBehaviour
                 {
                     if (oldPiece.GetPieceType() == PieceManager.PieceType.king)
                     {
-                        Debug.Log("is king");
                         if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour() == 0)
                         {
                             GetComponent<GameManager>().blackKingPosition =
@@ -147,7 +146,7 @@ public class SelectionManager : MonoBehaviour
         selectedTile.GetComponent<TileManager>().SetTileColour(2);
 
         // Get list of legal moves
-        List<GameObject> legalMoves = GetComponent<MoveGenerator>().GetMoves(selectedTile);
+        List<GameObject> legalMoves = GetComponent<MoveGenerator>().GetMoves(selectedTile, false, GetComponent<GameManager>().isPlayerWhite);
 
         if (legalMoves.Count > 0) { HighlightLegalMoves(legalMoves); }
     }

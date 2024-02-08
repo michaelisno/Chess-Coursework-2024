@@ -10,7 +10,7 @@ public class MoveGenerator : MonoBehaviour
 
     private bool isPlayerWhite;
 
-    public List<GameObject> GetMoves(GameObject selectedTile, bool ignoreKing = false, bool _isPlayerWhite = true)
+    public List<GameObject> GetMoves(GameObject selectedTile, bool ignoreKing = false, bool _isPlayerWhite = true, int direction = -1)
     {
         // References to tile and piece
         TileManager tile = selectedTile.GetComponent<TileManager>();
@@ -23,21 +23,21 @@ public class MoveGenerator : MonoBehaviour
         bool hasPieceMoved = piece.GetHasPieceMoved();
         tiles = gameManager.tiles;
 
-        isPlayerWhite = GetComponent<GameManager>().isPlayerWhite;
+        isPlayerWhite = _isPlayerWhite;
 
-        if (ignoreKing)
-            isPlayerWhite = !GetComponent<GameManager>().isPlayerWhite;
+        //if (ignoreKing)
+        //   isPlayerWhite = !GetComponent<GameManager>().isPlayerWhite;
 
-        if (_isPlayerWhite != GetComponent<GameManager>().isPlayerWhite)
-        {
-            isPlayerWhite = false;
-        }
+        //if (_isPlayerWhite != GetComponent<GameManager>().isPlayerWhite)
+        //{
+        //    isPlayerWhite = false;
+        //}
 
-        return GenerateLegalMoves(pieceType, position, tiles, hasPieceMoved, piece, ignoreKing);
+        return GenerateLegalMoves(pieceType, position, tiles, hasPieceMoved, piece, ignoreKing, direction);
     }
 
     private List<GameObject> GenerateLegalMoves(PieceManager.PieceType pieceType, Vector2 position, 
-        GameObject[,] tiles, bool hasPieceMoved, PieceManager piece, bool ignoreKing)
+        GameObject[,] tiles, bool hasPieceMoved, PieceManager piece, bool ignoreKing, int direction)
     {
         List<GameObject> legalMoves = new List<GameObject>();
 
@@ -53,15 +53,16 @@ public class MoveGenerator : MonoBehaviour
                     if (CheckMove(new Vector2(position.x, newY)))
                     {
                         legalMoves.Add(tiles[(int)position.x, newY]);
+
+                        // up 2 squares
+                        newY = (int)position.y + 2;
+                        if (CheckMove(new Vector2(position.x, newY))
+                            && !hasPieceMoved)
+                        {
+                            legalMoves.Add(tiles[(int)position.x, newY]);
+                        }
                     }
 
-                    // up 2 squares
-                    newY = (int)position.y + 2;
-                    if (CheckMove(new Vector2(position.x, newY))
-                        && !hasPieceMoved)
-                    {
-                        legalMoves.Add(tiles[(int)position.x, newY]);
-                    }
                     // enemy taking
                     // up 1, left 1
                     if (CheckMove(new Vector2(position.x - 1, position.y + 1), true))
@@ -102,14 +103,14 @@ public class MoveGenerator : MonoBehaviour
                     if (CheckMove(new Vector2(position.x, newY)))
                     {
                         legalMoves.Add(tiles[(int)position.x, newY]);
-                    }
 
-                    // up 2 squares
-                    newY = (int)position.y - 2;
-                    if (CheckMove(new Vector2(position.x, newY))
-                        && !hasPieceMoved)
-                    {
-                        legalMoves.Add(tiles[(int)position.x, newY]);
+                        // up 2 squares
+                        newY = (int)position.y - 2;
+                        if (CheckMove(new Vector2(position.x, newY))
+                            && !hasPieceMoved)
+                        {
+                            legalMoves.Add(tiles[(int)position.x, newY]);
+                        }
                     }
 
                     // enemy taking
@@ -147,133 +148,283 @@ public class MoveGenerator : MonoBehaviour
         // rook and straight queen
         if (pieceType == PieceManager.PieceType.rook || pieceType == PieceManager.PieceType.queen)
         {
-            // up movement: Go from the y position to the top end of the board
-            for (int newY = (int)position.y + 1; newY < 8; newY++)
+            if (direction == -1)
             {
-                if (!CheckMove(new Vector2((int)position.x, newY))) 
-                { 
-                    if (CheckMove(new Vector2((int)position.x, newY), true))
-                    {
-                        legalMoves.Add(tiles[(int)position.x, newY]);
-
-                    }
-                    break;
-                }
-
-                legalMoves.Add(tiles[(int)position.x, newY]);
-            }
-            // down movement
-            for (int newY = (int)position.y - 1; newY >= 0; newY--)
-            {
-                if (!CheckMove(new Vector2((int)position.x, newY)))
+                // up movement: Go from the y position to the top end of the board
+                for (int newY = (int)position.y + 1; newY < 8; newY++)
                 {
-                    if (CheckMove(new Vector2((int)position.x, newY), true))
+                    if (!CheckMove(new Vector2((int)position.x, newY)))
                     {
-                        legalMoves.Add(tiles[(int)position.x, newY]);
+                        if (CheckMove(new Vector2((int)position.x, newY), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x, newY]);
 
+                        }
+                        break;
                     }
-                    break;
-                }
 
-                legalMoves.Add(tiles[(int)position.x, newY]);
-            }
-            // right movement
-            for (int newX = (int)position.x + 1; newX < 8; newX++)
-            {
-                if (!CheckMove(new Vector2(newX, (int)position.y)))
+                    legalMoves.Add(tiles[(int)position.x, newY]);
+                }
+                // down movement
+                for (int newY = (int)position.y - 1; newY >= 0; newY--)
                 {
-                    if (CheckMove(new Vector2(newX, (int)position.y), true))
+                    if (!CheckMove(new Vector2((int)position.x, newY)))
                     {
-                        legalMoves.Add(tiles[newX, (int)position.y]);
+                        if (CheckMove(new Vector2((int)position.x, newY), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x, newY]);
 
+                        }
+                        break;
                     }
-                    break;
-                }
 
-                legalMoves.Add(tiles[newX, (int)position.y]);
-            }
-            // left movement
-            for (int newX = (int)position.x - 1; newX >= 0; newX--)
-            {
-                if (!CheckMove(new Vector2(newX, (int)position.y)))
+                    legalMoves.Add(tiles[(int)position.x, newY]);
+                }
+                // right movement
+                for (int newX = (int)position.x + 1; newX < 8; newX++)
                 {
-                    if (CheckMove(new Vector2(newX, (int)position.y), true))
+                    if (!CheckMove(new Vector2(newX, (int)position.y)))
                     {
-                        legalMoves.Add(tiles[newX, (int)position.y]);
+                        if (CheckMove(new Vector2(newX, (int)position.y), true))
+                        {
+                            legalMoves.Add(tiles[newX, (int)position.y]);
 
+                        }
+                        break;
                     }
-                    break;
-                }
 
-                legalMoves.Add(tiles[newX, (int)position.y]);
+                    legalMoves.Add(tiles[newX, (int)position.y]);
+                }
+                // left movement
+                for (int newX = (int)position.x - 1; newX >= 0; newX--)
+                {
+                    if (!CheckMove(new Vector2(newX, (int)position.y)))
+                    {
+                        if (CheckMove(new Vector2(newX, (int)position.y), true))
+                        {
+                            legalMoves.Add(tiles[newX, (int)position.y]);
+
+                        }
+                        break;
+                    }
+
+                    legalMoves.Add(tiles[newX, (int)position.y]);
+                }
+            }
+            else if (direction == 0)
+            {
+                // down movement
+                for (int newY = (int)position.y - 1; newY >= 0; newY--)
+                {
+                    if (!CheckMove(new Vector2((int)position.x, newY)))
+                    {
+                        if (CheckMove(new Vector2((int)position.x, newY), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x, newY]);
+
+                        }
+                        break;
+                    }
+
+                    legalMoves.Add(tiles[(int)position.x, newY]);
+                }
+            }
+            else if (direction == 1)
+            {
+                // up movement: Go from the y position to the top end of the board
+                for (int newY = (int)position.y + 1; newY < 8; newY++)
+                {
+                    if (!CheckMove(new Vector2((int)position.x, newY)))
+                    {
+                        if (CheckMove(new Vector2((int)position.x, newY), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x, newY]);
+
+                        }
+                        break;
+                    }
+
+                    legalMoves.Add(tiles[(int)position.x, newY]);
+                }
+            }
+            else if (direction == 2)
+            {
+                // left movement
+                for (int newX = (int)position.x - 1; newX >= 0; newX--)
+                {
+                    if (!CheckMove(new Vector2(newX, (int)position.y)))
+                    {
+                        if (CheckMove(new Vector2(newX, (int)position.y), true))
+                        {
+                            legalMoves.Add(tiles[newX, (int)position.y]);
+
+                        }
+                        break;
+                    }
+
+                    legalMoves.Add(tiles[newX, (int)position.y]);
+                }
+            }
+            else if (direction == 3)
+            {
+                // right movement
+                for (int newX = (int)position.x + 1; newX < 8; newX++)
+                {
+                    if (!CheckMove(new Vector2(newX, (int)position.y)))
+                    {
+                        if (CheckMove(new Vector2(newX, (int)position.y), true))
+                        {
+                            legalMoves.Add(tiles[newX, (int)position.y]);
+
+                        }
+                        break;
+                    }
+
+                    legalMoves.Add(tiles[newX, (int)position.y]);
+                }
             }
         }
 
         // bishop and diagonal queen
         if (pieceType == PieceManager.PieceType.bishop || pieceType == PieceManager.PieceType.queen)
         {
-            // right, up
-            for (int extra = 1; extra <= 8; extra++)
+            if (direction == -1)
             {
-                if (!CheckMove(new Vector2(position.x + extra, position.y + extra)))
+                // right, up
+                for (int extra = 1; extra <= 8; extra++)
                 {
-                    if (CheckMove(new Vector2(position.x + extra, position.y + extra), true))
+                    if (!CheckMove(new Vector2(position.x + extra, position.y + extra)))
                     {
-                        legalMoves.Add(tiles[(int)position.x + extra, (int)position.y + extra]);
+                        if (CheckMove(new Vector2(position.x + extra, position.y + extra), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x + extra, (int)position.y + extra]);
 
+                        }
+                        break;
                     }
-                    break;
+
+                    legalMoves.Add(tiles[(int)position.x + extra, (int)position.y + extra]);
                 }
 
-                legalMoves.Add(tiles[(int)position.x + extra, (int)position.y + extra]);
+                // left, up
+                for (int extra = 1; extra <= 8; extra++)
+                {
+                    if (!CheckMove(new Vector2(position.x - extra, position.y + extra)))
+                    {
+                        if (CheckMove(new Vector2(position.x - extra, position.y + extra), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x - extra, (int)position.y + extra]);
+
+                        }
+                        break;
+                    }
+
+                    legalMoves.Add(tiles[(int)position.x - extra, (int)position.y + extra]);
+                }
+
+                // right, down
+                for (int extra = 1; extra <= 8; extra++)
+                {
+                    if (!CheckMove(new Vector2(position.x + extra, position.y - extra)))
+                    {
+                        if (CheckMove(new Vector2(position.x + extra, position.y - extra), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x + extra, (int)position.y - extra]);
+
+                        }
+                        break;
+                    }
+
+                    legalMoves.Add(tiles[(int)position.x + extra, (int)position.y - extra]);
+                }
+
+                // left, down
+                for (int extra = 1; extra <= 8; extra++)
+                {
+                    if (!CheckMove(new Vector2(position.x - extra, position.y - extra)))
+                    {
+                        if (CheckMove(new Vector2(position.x - extra, position.y - extra), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x - extra, (int)position.y - extra]);
+
+                        }
+                        break;
+                    }
+
+                    legalMoves.Add(tiles[(int)position.x - extra, (int)position.y - extra]);
+                }
             }
-
-            // left, up
-            for (int extra = 1; extra <= 8; extra++)
+            else if (direction == 0)
             {
-                if (!CheckMove(new Vector2(position.x - extra, position.y + extra)))
+                // left, up
+                for (int extra = 1; extra <= 8; extra++)
                 {
-                    if (CheckMove(new Vector2(position.x - extra, position.y + extra), true))
+                    if (!CheckMove(new Vector2(position.x - extra, position.y + extra)))
                     {
-                        legalMoves.Add(tiles[(int)position.x - extra, (int)position.y + extra]);
+                        if (CheckMove(new Vector2(position.x - extra, position.y + extra), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x - extra, (int)position.y + extra]);
 
+                        }
+                        break;
                     }
-                    break;
-                }
 
-                legalMoves.Add(tiles[(int)position.x - extra, (int)position.y + extra]);
+                    legalMoves.Add(tiles[(int)position.x - extra, (int)position.y + extra]);
+                }
             }
-
-            // right, down
-            for (int extra = 1; extra <= 8; extra++)
+            else if (direction == 1)
             {
-                if (!CheckMove(new Vector2(position.x + extra, position.y - extra)))
+                // left, down
+                for (int extra = 1; extra <= 8; extra++)
                 {
-                    if (CheckMove(new Vector2(position.x + extra, position.y - extra), true))
+                    if (!CheckMove(new Vector2(position.x - extra, position.y - extra)))
                     {
-                        legalMoves.Add(tiles[(int)position.x + extra, (int)position.y - extra]);
+                        if (CheckMove(new Vector2(position.x - extra, position.y - extra), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x - extra, (int)position.y - extra]);
 
+                        }
+                        break;
                     }
-                    break;
-                }
 
-                legalMoves.Add(tiles[(int)position.x + extra, (int)position.y - extra]);
+                    legalMoves.Add(tiles[(int)position.x - extra, (int)position.y - extra]);
+                }
             }
-
-            // left, down
-            for (int extra = 1; extra <= 8; extra++)
+            else if (direction == 2)
             {
-                if (!CheckMove(new Vector2(position.x - extra, position.y - extra)))
+                // right, up
+                for (int extra = 1; extra <= 8; extra++)
                 {
-                    if (CheckMove(new Vector2(position.x - extra, position.y - extra), true))
+                    if (!CheckMove(new Vector2(position.x + extra, position.y + extra)))
                     {
-                        legalMoves.Add(tiles[(int)position.x - extra, (int)position.y - extra]);
+                        if (CheckMove(new Vector2(position.x + extra, position.y + extra), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x + extra, (int)position.y + extra]);
 
+                        }
+                        break;
                     }
-                    break;
-                }
 
-                legalMoves.Add(tiles[(int)position.x - extra, (int)position.y - extra]);
+                    legalMoves.Add(tiles[(int)position.x + extra, (int)position.y + extra]);
+                }
+            }
+            else if (direction == 3)
+            {
+                // right, down
+                for (int extra = 1; extra <= 8; extra++)
+                {
+                    if (!CheckMove(new Vector2(position.x + extra, position.y - extra)))
+                    {
+                        if (CheckMove(new Vector2(position.x + extra, position.y - extra), true))
+                        {
+                            legalMoves.Add(tiles[(int)position.x + extra, (int)position.y - extra]);
+
+                        }
+                        break;
+                    }
+
+                    legalMoves.Add(tiles[(int)position.x + extra, (int)position.y - extra]);
+                }
             }
         }
 
@@ -340,7 +491,6 @@ public class MoveGenerator : MonoBehaviour
         // king
         if (pieceType == PieceManager.PieceType.king && ignoreKing == false)
         {
-            Debug.Log("hi");
             List<GameObject> potentialLegalMoves = new List<GameObject>();
 
             // 1u
@@ -392,14 +542,18 @@ public class MoveGenerator : MonoBehaviour
                 potentialLegalMoves.Add(tiles[(int)position.x - 1, (int)position.y - 1]);
             }
 
+            foreach (GameObject t in potentialLegalMoves)
+            {
+                Debug.Log(t.name);
+            }
+
             // Get List of all enemy pieces' legal moves
             foreach (GameObject tile in tiles)
             {
                 if (tile.transform.GetChild(0).gameObject.activeInHierarchy && 
-                    Convert.ToBoolean(tile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour())
-                    != GetComponent<GameManager>().isPlayerWhite)
+                    Convert.ToBoolean(tile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour()) != isPlayerWhite)
                 {
-                    List<GameObject> tempLegalMoves = GetMoves(tile, true);
+                    List<GameObject> tempLegalMoves = GetMoves(tile, true, isPlayerWhite);
                     foreach (GameObject legalMove in tempLegalMoves)
                     {
                         if (potentialLegalMoves.Contains(legalMove))
