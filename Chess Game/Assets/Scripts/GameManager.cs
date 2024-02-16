@@ -16,12 +16,14 @@ public class GameManager : MonoBehaviour
 
     public bool isPlayerWhite = true;
     public bool isWhiteMoving = true;
+    public bool isPlayerChecked = false;
 
     public TextMeshProUGUI whiteTimerText;
     public TextMeshProUGUI blackTimerText;
 
     public GameObject winScreenPanel;
     public GameObject lossScreenPanel;
+    public GameObject checkerTile;
 
     public Vector2 whiteKingPosition, blackKingPosition;
 
@@ -60,7 +62,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void EndGame(int winner)
+    public void EndGame(int winner)
     {
         StopAllCoroutines();
 
@@ -113,10 +115,10 @@ public class GameManager : MonoBehaviour
             {
                 // white king checked
                 Debug.Log("GAME STOPPED: WHITE KING CHECKED");
+                isPlayerChecked = true;
+                checkerTile = checker;
             }
         }
-
-        checker = null;
     }
 
     private GameObject DetectCheck(int whichPlayer)

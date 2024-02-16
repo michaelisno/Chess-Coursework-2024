@@ -17,116 +17,131 @@ public class SelectionManager : MonoBehaviour
         {
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
-                if (selectedTile == null)
-                { 
-                    SelectNewPiece();
-                    return;
-                }
-
-                // reset colour and currently selected tile
-                Vector2 tilePosition = selectedTile.GetComponent<TileManager>().GetTilePosition();
-                PieceManager oldPiece = selectedTile.transform.GetChild(0).GetComponent<PieceManager>();
-                PieceManager newPiece = hit.collider.transform.GetChild(0).GetComponent<PieceManager>();
-
-                if ((newPiece.GetPieceType() != PieceManager.PieceType.none && Convert.ToBoolean(newPiece.GetPieceColour()) 
-                    == GetComponent<GameManager>().isPlayerWhite) || highlightedTiles.Contains(hit.collider.gameObject)) 
+                if (!GetComponent<GameManager>().isPlayerChecked)
                 {
-                    selectedTile.GetComponent<TileManager>().SetTileColour(Convert.ToInt32(tilePosition.x + tilePosition.y) % 2);
-                    selectedTile = null; 
-                }
-
-                // case one: currently selected tile == newly selected tile
-                if (hit.collider.gameObject == oldPiece.transform.parent.gameObject)
-                {
-                    // remove all highlighted legal tiles
-                    HighlightLegalMoves(new List<GameObject>());
-                    return;
-                }
-
-                // case two: clicked tile not selected tile and clicked tile in legal moves, select new tile
-                if (highlightedTiles.Contains(hit.collider.gameObject) 
-                    && hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.none)
-                {
-                    if (oldPiece.GetPieceType() == PieceManager.PieceType.king)
+                    if (selectedTile == null)
                     {
-                        Debug.Log("is king");
-                        if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour() == 0)
-                        {
-                            GetComponent<GameManager>().blackKingPosition =
-                                newPiece.GetComponentInParent<TileManager>().GetTilePosition();
-                        }
-                        else
-                        {
-                            GetComponent<GameManager>().whiteKingPosition =
-                                newPiece.GetComponentInParent<TileManager>().GetTilePosition();
-                        }
+                        SelectNewPiece();
+                        return;
                     }
 
-                    // Set new piece info to old piece info   
-                    newPiece.SetHasPieceMoved(true);
-                    newPiece.SetPieceColour(oldPiece.GetPieceColour());
-                    newPiece.SetPieceType(oldPiece.GetPieceType());
+                    // reset colour and currently selected tile
+                    Vector2 tilePosition = selectedTile.GetComponent<TileManager>().GetTilePosition();
+                    PieceManager oldPiece = selectedTile.transform.GetChild(0).GetComponent<PieceManager>();
+                    PieceManager newPiece = hit.collider.transform.GetChild(0).GetComponent<PieceManager>();
 
-                    // Set old piece info to no piece
-                    oldPiece.SetPieceType(PieceManager.PieceType.none);
-                    oldPiece.SetHasPieceMoved(false);
-
-                    // remove all highlighted legal tiles
-                    HighlightLegalMoves(new List<GameObject>());
-                    GetComponent<GameManager>().PieceMoved();
-                    return;
-                }
-                // case three: clicked tile not selected tile and clicked tile is friendly, deselect current tile, select new tile
-                else if (Convert.ToBoolean(newPiece.GetPieceColour()) == GetComponent<GameManager>().isPlayerWhite)
-                {
-                    // remove all highlighted legal tiles
-                    HighlightLegalMoves(new List<GameObject>());
-                    SelectNewPiece();
-                    return;
-                }
-                // case four: clicked tile was legal move hence take enemy piece and move
-                if (highlightedTiles.Contains(hit.collider.gameObject)
-                    && hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() != PieceManager.PieceType.none
-                    && Convert.ToBoolean(hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour())
-                    != GetComponent<GameManager>().isPlayerWhite)
-                {
-                    if (oldPiece.GetPieceType() == PieceManager.PieceType.king)
+                    if ((newPiece.GetPieceType() != PieceManager.PieceType.none && Convert.ToBoolean(newPiece.GetPieceColour())
+                        == GetComponent<GameManager>().isPlayerWhite) || highlightedTiles.Contains(hit.collider.gameObject))
                     {
-                        if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour() == 0)
-                        {
-                            GetComponent<GameManager>().blackKingPosition =
-                                newPiece.GetComponentInParent<TileManager>().GetTilePosition();
-                        }
-                        else
-                        {
-                            GetComponent<GameManager>().whiteKingPosition =
-                                newPiece.GetComponentInParent<TileManager>().GetTilePosition();
-                        }
+                        selectedTile.GetComponent<TileManager>().SetTileColour(Convert.ToInt32(tilePosition.x + tilePosition.y) % 2);
+                        selectedTile = null;
                     }
 
-                    GameObject pieceToTake = hit.transform.GetChild(0).gameObject.CloneViaFakeSerialization();
-                    pieceToTake.name = pieceToTake.GetComponent<PieceManager>().GetPieceType().ToString();
+                    // case one: currently selected tile == newly selected tile
+                    if (hit.collider.gameObject == oldPiece.transform.parent.gameObject)
+                    {
+                        // remove all highlighted legal tiles
+                        HighlightLegalMoves(new List<GameObject>());
+                        return;
+                    }
 
-                    // take piece
-                    if (GetComponent<GameManager>().isPlayerWhite)
-                        GetComponent<GameManager>().takenBlackPieces.Add(pieceToTake);
+                    // case two: clicked tile not selected tile and clicked tile in legal moves, select new tile
+                    if (highlightedTiles.Contains(hit.collider.gameObject)
+                        && hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.none)
+                    {
+                        if (oldPiece.GetPieceType() == PieceManager.PieceType.king)
+                        {
+                            Debug.Log("is king");
+                            if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour() == 0)
+                            {
+                                GetComponent<GameManager>().blackKingPosition =
+                                    newPiece.GetComponentInParent<TileManager>().GetTilePosition();
+                            }
+                            else
+                            {
+                                GetComponent<GameManager>().whiteKingPosition =
+                                    newPiece.GetComponentInParent<TileManager>().GetTilePosition();
+                            }
+                        }
+
+                        // Set new piece info to old piece info   
+                        newPiece.SetHasPieceMoved(true);
+                        newPiece.SetPieceColour(oldPiece.GetPieceColour());
+                        newPiece.SetPieceType(oldPiece.GetPieceType());
+
+                        // Set old piece info to no piece
+                        oldPiece.SetPieceType(PieceManager.PieceType.none);
+                        oldPiece.SetHasPieceMoved(false);
+
+                        // remove all highlighted legal tiles
+                        HighlightLegalMoves(new List<GameObject>());
+                        GetComponent<GameManager>().PieceMoved();
+                        return;
+                    }
+                    // case three: clicked tile not selected tile and clicked tile is friendly, deselect current tile, select new tile
+                    else if (Convert.ToBoolean(newPiece.GetPieceColour()) == GetComponent<GameManager>().isPlayerWhite)
+                    {
+                        // remove all highlighted legal tiles
+                        HighlightLegalMoves(new List<GameObject>());
+                        SelectNewPiece();
+                        return;
+                    }
+                    // case four: clicked tile was legal move hence take enemy piece and move
+                    if (highlightedTiles.Contains(hit.collider.gameObject)
+                        && hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() != PieceManager.PieceType.none
+                        && Convert.ToBoolean(hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour())
+                        != GetComponent<GameManager>().isPlayerWhite)
+                    {
+                        if (oldPiece.GetPieceType() == PieceManager.PieceType.king)
+                        {
+                            if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour() == 0)
+                            {
+                                GetComponent<GameManager>().blackKingPosition =
+                                    newPiece.GetComponentInParent<TileManager>().GetTilePosition();
+                            }
+                            else
+                            {
+                                GetComponent<GameManager>().whiteKingPosition =
+                                    newPiece.GetComponentInParent<TileManager>().GetTilePosition();
+                            }
+                        }
+
+                        GameObject pieceToTake = hit.transform.GetChild(0).gameObject.CloneViaFakeSerialization();
+                        pieceToTake.name = pieceToTake.GetComponent<PieceManager>().GetPieceType().ToString();
+
+                        // take piece
+                        if (GetComponent<GameManager>().isPlayerWhite)
+                            GetComponent<GameManager>().takenBlackPieces.Add(pieceToTake);
+                        else
+                            GetComponent<GameManager>().takenWhitePieces.Add(pieceToTake);
+
+                        // Set new piece info to old piece info   
+                        newPiece.SetHasPieceMoved(true);
+                        newPiece.SetPieceColour(oldPiece.GetPieceColour());
+                        newPiece.SetPieceType(oldPiece.GetPieceType());
+
+                        // Set old piece info to no piece
+                        oldPiece.SetPieceType(PieceManager.PieceType.none);
+                        oldPiece.SetHasPieceMoved(false);
+
+                        // remove all highlighted legal tiles
+                        HighlightLegalMoves(new List<GameObject>());
+                        GetComponent<GameManager>().PieceMoved();
+
+                        return;
+                    }
+                }
+                else
+                {
+                    Debug.Log("SelectionManager whilst checked, activated.");
+                    if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.king)
+                    {
+                        Debug.Log("Attempted to move king after checked.");
+                    }
                     else
-                        GetComponent<GameManager>().takenWhitePieces.Add(pieceToTake);
-
-                    // Set new piece info to old piece info   
-                    newPiece.SetHasPieceMoved(true);
-                    newPiece.SetPieceColour(oldPiece.GetPieceColour());
-                    newPiece.SetPieceType(oldPiece.GetPieceType());
-
-                    // Set old piece info to no piece
-                    oldPiece.SetPieceType(PieceManager.PieceType.none);
-                    oldPiece.SetHasPieceMoved(false);
-
-                    // remove all highlighted legal tiles
-                    HighlightLegalMoves(new List<GameObject>());
-                    GetComponent<GameManager>().PieceMoved();
-
-                    return;
+                    {
+                        Debug.Log("Moving some piece other than king.");
+                    }
                 }
             }
         }

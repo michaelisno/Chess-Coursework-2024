@@ -568,7 +568,108 @@ public class MoveGenerator : MonoBehaviour
             legalMoves = potentialLegalMoves;
         }
 
-        return legalMoves;
+        if (!GetComponent<GameManager>().isPlayerChecked)
+            return legalMoves;
+        else
+        {
+            List<GameObject> checkerLegalMoves = new List<GameObject>();
+            GameObject checkerTile = GetComponent<GameManager>().checkerTile;
+            GameObject checkedKingTile = GetComponent<GameManager>().
+                tiles[(int)GetComponent<GameManager>().whiteKingPosition.x,
+                (int)GetComponent<GameManager>().whiteKingPosition.y];
+
+            // If checker is rook or queen
+            if (checkerTile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.rook
+                || checkerTile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.queen)
+            {
+                Debug.Log("CHECKING PIECE IS A ROOK! or Queen");
+                int xDiff = (int)checkedKingTile.GetComponent<TileManager>().GetTilePosition().x
+                    - (int)checkerTile.GetComponent<TileManager>().GetTilePosition().x;
+                int yDiff = (int)checkedKingTile.GetComponent<TileManager>().GetTilePosition().y
+                    - (int)checkerTile.GetComponent<TileManager>().GetTilePosition().y;
+
+                if (xDiff == 0)
+                {
+                    if (yDiff >= 0)
+                    {
+                        // king is below rook
+                        checkerLegalMoves = GetComponent<MoveGenerator>().GetMoves(checkerTile, false, !isPlayerWhite, 1);
+                    }
+                    if (yDiff < 0)
+                    {
+                        // king is above rook
+                        checkerLegalMoves = GetComponent<MoveGenerator>().GetMoves(checkerTile, false, !isPlayerWhite, 0);
+                    }
+                }
+                else
+                {
+                    if (xDiff >= 0)
+                    {
+                        // king is left of rook
+                        checkerLegalMoves = GetComponent<MoveGenerator>().GetMoves(checkerTile, false, !isPlayerWhite, 3);
+                    }
+                    if (yDiff < 0)
+                    {
+                        // king is right of rook
+                        checkerLegalMoves = GetComponent<MoveGenerator>().GetMoves(checkerTile, false, !isPlayerWhite, 2);
+                    }
+                }
+            }
+
+            // If checker is bishop or queen
+            if (checkerTile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.bishop
+                || checkerTile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.queen)
+            {
+                Debug.Log("CHECKING PIECE IS A BISHOP! or Queen");
+                int xDiff = (int)checkedKingTile.GetComponent<TileManager>().GetTilePosition().x
+                    - (int)checkerTile.GetComponent<TileManager>().GetTilePosition().x;
+                int yDiff = (int)checkedKingTile.GetComponent<TileManager>().GetTilePosition().y
+                    - (int)checkerTile.GetComponent<TileManager>().GetTilePosition().y;
+
+                if (xDiff < 0 && yDiff < 0)
+                {
+                    // king is up, left from bishop
+                    checkerLegalMoves = GetComponent<MoveGenerator>().GetMoves(checkerTile, false, !isPlayerWhite, 0);
+                }
+                else if (xDiff < 0 && yDiff > 0)
+                {
+                    // king is down, left from bishop
+                    checkerLegalMoves = GetComponent<MoveGenerator>().GetMoves(checkerTile, false, !isPlayerWhite, 1);
+                }
+                else if (xDiff > 0 && yDiff < 0)
+                {
+                    // king is up, right from bishop
+                    checkerLegalMoves = GetComponent<MoveGenerator>().GetMoves(checkerTile, false, !isPlayerWhite, 2);
+                }
+                else
+                {
+                    // king is down, right from bishop
+                    checkerLegalMoves = GetComponent<MoveGenerator>().GetMoves(checkerTile, false, !isPlayerWhite, 3);
+                }
+            }
+
+            // if checker is knight or pawn
+            if (checkerTile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.knight
+                || checkerTile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.pawn)
+            {
+                checkerLegalMoves.Add(checkerTile);
+            }
+
+            checkerLegalMoves.Add(GetComponent<GameManager>().tiles[(int)checkerTile.GetComponent<TileManager>().GetTilePosition().x,
+            (int)checkerTile.GetComponent<TileManager>().GetTilePosition().y]);
+
+            List<GameObject> finalMoves = new List<GameObject>();
+
+            foreach (GameObject move in legalMoves)
+            {
+                if (checkerLegalMoves.Contains(move))
+                { 
+                    finalMoves.Add(move);
+                }
+            }
+
+            return finalMoves;
+        }
     }
 
     private bool CheckMove(Vector2 newPos, bool isTakingEnemy = false)

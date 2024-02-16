@@ -260,6 +260,7 @@ public class AIMovement : MonoBehaviour
             {
                 // 9: If no moves in 'finalLegalMoves', friendly king is check mated!
                 Debug.Log("KING IN CHECKMATE!");
+                GetComponent<GameManager>().EndGame(0);
             }
         }
     }
