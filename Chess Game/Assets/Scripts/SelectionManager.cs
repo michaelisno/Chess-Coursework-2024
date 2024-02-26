@@ -134,13 +134,23 @@ public class SelectionManager : MonoBehaviour
                 else
                 {
                     Debug.Log("SelectionManager whilst checked, activated.");
-                    if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.king)
+                    if (hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.king
+                        && Convert.ToBoolean(hit.collider.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour()) ==
+                        GetComponent<GameManager>().isPlayerWhite)
                     {
                         Debug.Log("Attempted to move king after checked.");
+                        List<GameObject> kingLegalMoves = GetComponent<MoveGenerator>().GetMoves(hit.collider.gameObject, true, 
+                            GetComponent<GameManager>().isPlayerWhite);
+
+                        if (kingLegalMoves.Count > 0)
+                            HighlightLegalMoves(kingLegalMoves);
+                        else
+                            Debug.Log("No Legal moves for king");
                     }
                     else
                     {
                         Debug.Log("Moving some piece other than king.");
+
                     }
                 }
             }
