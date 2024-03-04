@@ -150,7 +150,105 @@ public class SelectionManager : MonoBehaviour
                     else
                     {
                         Debug.Log("Moving some piece other than king.");
+                        // Generate enemy checker legal moves IN DIRECTION OF FRIENDLY KING, add Checker position to list
+                        GameObject enemyChecker = GetComponent<GameManager>().checkerTile;
+                        List<GameObject> enemyCheckerLegalMoves = new List<GameObject>();
 
+                        Vector2 kingPos = new Vector2();
+                        Vector2 enemyPos = enemyChecker.GetComponent<TileManager>().GetTilePosition();
+
+                        bool isKingWhite = GetComponent<GameManager>().isPlayerWhite;
+
+                        if (GetComponent<GameManager>().isPlayerWhite)
+                            kingPos = GetComponent<GameManager>().whiteKingPosition;
+                        else
+                            kingPos = GetComponent<GameManager>().blackKingPosition;
+
+                        GameObject checkedKingTile = GetComponent<GameManager>().tiles[(int)kingPos.x, (int)kingPos.y];
+
+                        if (enemyChecker.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.bishop
+                            || enemyChecker.transform.GetChild(0).GetComponent<PieceManager>().GetPieceType() == PieceManager.PieceType.queen)
+                        {
+                            int xDiff = (int)checkedKingTile.GetComponent<TileManager>().GetTilePosition().x
+                                - (int)enemyChecker.GetComponent<TileManager>().GetTilePosition().x;
+                            int yDiff = (int)checkedKingTile.GetComponent<TileManager>().GetTilePosition().y
+                                - (int)enemyChecker.GetComponent<TileManager>().GetTilePosition().y;
+
+                            if (xDiff < 0 && yDiff < 0)
+                            {
+                                // king is up, left from bishop
+                                enemyCheckerLegalMoves = GetComponent<MoveGenerator>().GetMoves(enemyChecker, false, !isKingWhite, 0);
+                            }
+                            else if (xDiff < 0 && yDiff > 0)
+                            {
+                                // king is down, left from bishop
+                                enemyCheckerLegalMoves = GetComponent<MoveGenerator>().GetMoves(enemyChecker, false, !isKingWhite, 1);
+                            }
+                            else if (xDiff > 0 && yDiff < 0)
+                            {
+                                // king is up, right from bishop
+                                enemyCheckerLegalMoves = GetComponent<MoveGenerator>().GetMoves(enemyChecker, false, !isKingWhite, 2);
+                            }
+                            else
+                            {
+                                // king is down, right from bishop
+                                enemyCheckerLegalMoves = GetComponent<MoveGenerator>().GetMoves(enemyChecker, false, !isKingWhite, 3);
+                            }
+                        }
+
+                        enemyCheckerLegalMoves.Add(enemyChecker);
+
+                        // For each friendly tile, generate legal moves and add to seperate list if coincide with enemy checker legal moves
+                        List<GameObject> viableFriendlyTiles = new List<GameObject>();
+                        List<List<GameObject>> viableFriendlyMoves = new List<List<GameObject>>();
+
+                        foreach (GameObject tile in GetComponent<GameManager>().tiles)
+                        {
+                            if (tile.transform.GetChild(0).gameObject.activeInHierarchy
+                                && Convert.ToBoolean(tile.transform.GetChild(0).GetComponent<PieceManager>().GetPieceColour())
+                                == GetComponent<GameManager>().isPlayerWhite)
+                            {
+                                List<GameObject> tempFriendlyLegalMoves =
+                                    GetComponent<MoveGenerator>().GetMoves(tile, false, GetComponent<GameManager>().isPlayerWhite);
+
+                                List<GameObject> finalLegalMoves = new List<GameObject>();
+
+                                foreach (GameObject tempMove in tempFriendlyLegalMoves)
+                                {
+                                    if (enemyCheckerLegalMoves.Contains(tempMove))
+                                    { 
+                                        finalLegalMoves.Add(tempMove);
+                                    }
+                                }
+
+                                if (finalLegalMoves.Count > 0)
+                                {
+                                    viableFriendlyTiles.Add(tile);
+                                    viableFriendlyMoves.Add(finalLegalMoves);
+                                }
+                            }
+                        }
+                        // Check if selected tile is friendly tile with viable legal move, if not, ignore
+                        if (viableFriendlyTiles.Contains(hit.collider.gameObject))
+                        {
+                            // HIGHLIGHT MOVE HERE
+                            int index = viableFriendlyTiles.IndexOf(hit.collider.gameObject);
+                            HighlightLegalMoves(viableFriendlyMoves[index]);
+                            GetComponent<GameManager>().isPlayerChecked = false;
+                            
+                        }
+
+                        // If no friendly viable legal moves generated, and no legal king moves avaiable, checkmate achieved - end game.
+                        if (viableFriendlyTiles.Count == 0)
+                        {
+                            List<GameObject> kingLegalMoves = GetComponent<MoveGenerator>().GetMoves(hit.collider.gameObject, true,
+                                GetComponent<GameManager>().isPlayerWhite);
+                            if (kingLegalMoves.Count == 0)
+                            {
+                                Debug.Log("END GAME, CHECKMATE");
+                                GetComponent<GameManager>().EndGame(Convert.ToInt32(GetComponent<GameManager>().isPlayerWhite));
+                            }
+                        }
                     }
                 }
             }
