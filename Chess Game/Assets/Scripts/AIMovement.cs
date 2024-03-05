@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
@@ -32,11 +33,15 @@ public class AIMovement : MonoBehaviour
 
         int selectedLegalMove = UnityEngine.Random.Range(0, legalMoves.Count);
 
-        MovePiece(legalMoves[selectedLegalMove], selectedPiece);
+        StartCoroutine(MovePiece(legalMoves[selectedLegalMove], selectedPiece));
     }
 
-    private void MovePiece(GameObject moveTo, GameObject moveFrom, bool informGameManager = true)
+    IEnumerator MovePiece(GameObject moveTo, GameObject moveFrom, bool informGameManager = true)
     {
+        int randomTime = UnityEngine.Random.Range(1, 3);
+
+        yield return new WaitForSeconds(randomTime);
+
         PieceManager newPiece = moveTo.transform.GetChild(0).GetComponent<PieceManager>();
         PieceManager oldPiece = moveFrom.transform.GetChild(0).GetComponent<PieceManager>();
 

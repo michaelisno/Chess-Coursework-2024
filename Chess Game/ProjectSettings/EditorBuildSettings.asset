@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/DifficultySelection.unity
     guid: 053f417d807b29448b835d68a8ae4770
   - enabled: 1
-    path: Assets/Singleplayer.unity
+    path: Assets/Scenes/Singleplayer.unity
     guid: 88b5edbf64725db418abcbd3e247f802
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
