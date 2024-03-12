@@ -18,14 +18,19 @@ public class GameManager : MonoBehaviour
     public bool isWhiteMoving = true;
     public bool isPlayerChecked = false;
 
+    public bool hasGameEnded = false;
+
     public TextMeshProUGUI whiteTimerText;
     public TextMeshProUGUI blackTimerText;
 
     public GameObject winScreenPanel;
     public GameObject lossScreenPanel;
     public GameObject checkerTile;
+    public GameObject takenPiecePrefab;
 
     public Vector2 whiteKingPosition, blackKingPosition;
+
+    public int whiteMovesCount = 0;
 
     private void Start()
     {
@@ -65,6 +70,7 @@ public class GameManager : MonoBehaviour
     public void EndGame(int winner)
     {
         StopAllCoroutines();
+        hasGameEnded = true;
 
         if (winner == 1)
         {
@@ -82,41 +88,46 @@ public class GameManager : MonoBehaviour
             else
                 lossScreenPanel.gameObject.SetActive(true);
         }
+
+        UpdateStats(winner);
     }
 
     public void PieceMoved()
     {
-        isWhiteMoving = !isWhiteMoving;
-
-        GameObject checker = DetectCheck(Convert.ToInt32(isWhiteMoving));
-
-        if (checker == null)
+        if (!hasGameEnded)
         {
-            if (isWhiteMoving != isPlayerWhite)
+            isWhiteMoving = !isWhiteMoving;
+
+            GameObject checker = DetectCheck(Convert.ToInt32(isWhiteMoving));
+
+            if (checker == null)
             {
-                // enemy is moving, run AI move
-                GetComponent<AIMovement>().Move();
-            }
-        }
-        else
-        {
-            if (isWhiteMoving == false)
-            {
-                // black king checked
-                Debug.Log("GAME STOPPED: BLACK KING CHECKED");
-                if (isPlayerWhite)
+                if (isWhiteMoving != isPlayerWhite)
                 {
-                    Debug.Log("player is white");
-                    // player is white, ie, black is AI
-                    GetComponent<AIMovement>().RunDecheckMove(tiles[(int)blackKingPosition.x, (int)blackKingPosition.y], false, checker);
+                    // enemy is moving, run AI move
+                    GetComponent<AIMovement>().Move();
                 }
             }
-            else 
+            else
             {
-                // white king checked
-                Debug.Log("GAME STOPPED: WHITE KING CHECKED");
-                isPlayerChecked = true;
-                checkerTile = checker;
+                if (isWhiteMoving == false)
+                {
+                    // black king checked
+                    Debug.Log("GAME STOPPED: BLACK KING CHECKED");
+                    if (isPlayerWhite)
+                    {
+                        Debug.Log("player is white");
+                        // player is white, ie, black is AI
+                        GetComponent<AIMovement>().RunDecheckMove(tiles[(int)blackKingPosition.x, (int)blackKingPosition.y], false, checker);
+                    }
+                }
+                else
+                {
+                    // white king checked
+                    Debug.Log("GAME STOPPED: WHITE KING CHECKED");
+                    isPlayerChecked = true;
+                    checkerTile = checker;
+                }
             }
         }
     }
@@ -187,5 +198,23 @@ public class GameManager : MonoBehaviour
         tile.GetComponent<TileManager>().InitializePiece();
 
         return tile;
+    }
+
+    private void UpdateStats(int winner)
+    {
+        if (winner == 0)
+        {
+            // winner pannel
+            winScreenPanel.gameObject.transform.GetChild(4).GetChild(1).GetComponent<TextMeshPro>().SetText("Number of Moves: " + whiteMovesCount);
+            foreach (GameObject takenTile in takenBlackPieces)
+            {
+                GameObject takenPiece = Instantiate(takenPiecePrefab, winScreenPanel.gameObject.transform.GetChild(4).GetChild(3));
+                takenPiece.GetComponent<TextMeshPro>().SetText(takenTile.name);
+            }
+        }
+        else
+        { 
+            // loser pannel
+        }
     }
 }

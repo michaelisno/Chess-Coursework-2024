@@ -38,7 +38,8 @@ public class AIMovement : MonoBehaviour
 
     IEnumerator MovePiece(GameObject moveTo, GameObject moveFrom, bool informGameManager = true)
     {
-        int randomTime = UnityEngine.Random.Range(1, 3);
+        int difficulty = PlayerPrefs.GetInt("ai_difficulty");
+        int randomTime = UnityEngine.Random.Range(2 - difficulty, 3 * (2 - difficulty));
 
         yield return new WaitForSeconds(randomTime);
 
